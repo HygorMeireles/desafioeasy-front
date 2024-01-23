@@ -1,12 +1,9 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
-
 import AuthLayout from '../layouts/AuthLayout.vue'
 import AppLayout from '../layouts/AppLayout.vue'
 import Page404Layout from '../layouts/Page404Layout.vue'
-
 import RouteViewComponent from '../layouts/RouterBypass.vue'
 import UIRoute from '../pages/admin/ui/route'
-
 import { isLoggedIn } from '../services/authService'
 
 const routes: Array<RouteRecordRaw> = [
@@ -204,9 +201,11 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
+  // Verificar a autenticação
   if (to.matched.some((route) => route.meta.requiresAuth) && !isLoggedIn()) {
     next({ name: 'login' })
   } else {
+    // Se o usuário está autenticado, ou a rota não requer autenticação, continue
     next()
   }
 })

@@ -9,9 +9,12 @@
       </template>
       <va-dropdown-content class="profile-dropdown__content">
         <va-list-item v-for="option in options" :key="option.name" class="p-2">
-          <router-link :to="{ name: option.redirectTo }" class="profile-dropdown__item">
+          <router-link v-if="option.name !== 'logout'" :to="{ name: option.redirectTo }" class="profile-dropdown__item">
             {{ t(`user.${option.name}`) }}
           </router-link>
+          <a v-else class="profile-dropdown__item" @click="handleLogout">
+            {{ t(`user.${option.name}`) }}
+          </a>
         </va-list-item>
       </va-dropdown-content>
     </va-dropdown>
@@ -22,6 +25,7 @@
   import { ref } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { useColors } from 'vuestic-ui'
+  import { logout } from '@/services/authService'
 
   const { t } = useI18n()
   const { colors } = useColors()
@@ -45,6 +49,10 @@
   )
 
   const isShown = ref(false)
+
+  const handleLogout = async () => {
+    await logout()
+  }
 </script>
 
 <style lang="scss" scoped>
@@ -62,6 +70,7 @@
       &:hover,
       &:active {
         color: var(--va-primary);
+        cursor: pointer;
       }
     }
   }
