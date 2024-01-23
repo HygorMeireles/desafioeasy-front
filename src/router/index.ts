@@ -7,6 +7,8 @@ import Page404Layout from '../layouts/Page404Layout.vue'
 import RouteViewComponent from '../layouts/RouterBypass.vue'
 import UIRoute from '../pages/admin/ui/route'
 
+import { isLoggedIn } from '../services/authService'
+
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/:catchAll(.*)',
@@ -16,16 +18,12 @@ const routes: Array<RouteRecordRaw> = [
     name: 'admin',
     path: '/admin',
     component: AppLayout,
+    meta: { requiresAuth: true },
     children: [
       {
         name: 'dashboard',
         path: 'dashboard',
         component: () => import('../pages/admin/dashboard/Dashboard.vue'),
-      },
-      {
-        name: 'users',
-        path: 'users',
-        component: () => import('../pages/admin/users/Users.vue'),
       },
 
       {
@@ -195,7 +193,7 @@ const router = createRouter({
     if (savedPosition) {
       return savedPosition
     }
-    // For some reason using documentation example doesn't scroll on page navigation.
+
     if (to.hash) {
       return { el: to.hash, behavior: 'smooth' }
     } else {
@@ -203,6 +201,14 @@ const router = createRouter({
     }
   },
   routes,
+})
+
+router.beforeEach((to, from, next) => {
+  if (to.matched.some((route) => route.meta.requiresAuth) && !isLoggedIn()) {
+    next({ name: 'login' })
+  } else {
+    next()
+  }
 })
 
 export default router
