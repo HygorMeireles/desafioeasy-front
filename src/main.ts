@@ -34,9 +34,13 @@ if (import.meta.env.VITE_APP_GTM_ENABLED) {
 }
 
 router.beforeEach((to, from, next) => {
+  console.log('Before Each:', to.name, from.name)
+
   if (to.matched.some((route) => route.meta.requiresAuth) && !isLoggedIn()) {
+    console.log('Redirecting to login')
     next({ name: 'login' })
   } else {
+    console.log('Proceeding with navigation')
     next()
   }
 })
