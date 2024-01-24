@@ -21,7 +21,7 @@
     }>(),
     {
       width: '16rem',
-      color: 'secondary',
+      color: 'primary',
       animated: true,
       minimized: true,
       minimizedWidth: undefined,

@@ -144,7 +144,7 @@
     "buttons": "Botões",
     "charts": "Gráficos",
     "colorPickers": "Colhedores de Cor",
-    "dashboard": "Painel principal",
+    "dashboard": "Painel",
     "formElements": "Elementos de Formulários",
     "forms": "Formulários",
     "mediumEditor": "Editor Medium",
@@ -240,10 +240,31 @@
       "country": "País"
     }
   },
+  "auth":{
+  "login":"Login",
+  "password":"Password",
+  "createNewAccount":"Criar uma nova conta",
+  "sign_up":"Criar"
+  },
   "user": {
     "language": "Trocar Linguagem",
     "logout": "Sair",
     "profile": "Meu Perfil"
+  },
+  "users": {
+    "users": "Usuários",
+    "name": "Nome",
+    "login": "Login"
+  },
+  "products": {
+    "products": "Produtos",
+    "name": "Nome do produto",
+    "ballast": "Lastro"
+  },
+  "loads": {
+    "loads": "Cargas",
+    "code": "Código",
+    "delivery_date": "Data de entrega"
   },
   "treeView": {
     "basic": "Básico",

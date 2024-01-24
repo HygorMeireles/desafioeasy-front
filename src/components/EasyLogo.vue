@@ -1,16 +1,10 @@
 <template>
-  <svg
-    class="va-icon-vuestic"
-    :height="props.height"
-    viewBox="0 0 100 40"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
+  <svg class="va-icon-easy" :height="props.height" viewBox="0 0 100 40" fill="none">
     <image
       href="https://easypallet.app/img/logo-easypallet.4242a065.png"
       x="0"
       y="0"
-      height="115%"
+      height="100%"
       width="100%"
       preserveAspectRatio="none"
     />

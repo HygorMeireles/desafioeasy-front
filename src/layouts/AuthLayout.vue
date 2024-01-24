@@ -2,7 +2,7 @@
   <div class="auth-layout grid grid-cols-12 content-center">
     <div class="flex col-span-12 p-4 justify-center">
       <div class="py-5 justify-center flex" to="/">
-        <vuestic-logo height="150" />
+        <easy-logo height="150" />
       </div>
     </div>
 
@@ -28,12 +28,12 @@
 </template>
 
 <script>
-  import VuesticLogo from '../components/VuesticLogo.vue'
+  import EasyLogo from '@/components/EasyLogo.vue'
   import { useI18n } from 'vue-i18n'
 
   export default {
     name: 'AuthLayout',
-    components: { VuesticLogo },
+    components: { EasyLogo },
     setup() {
       const { t } = useI18n()
       return { t }

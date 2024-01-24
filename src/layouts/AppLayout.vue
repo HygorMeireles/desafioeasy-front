@@ -23,32 +23,25 @@
 </template>
 
 <script setup>
-  import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
-  import { storeToRefs } from 'pinia'
-  import { onBeforeRouteUpdate } from 'vue-router'
-
-  import { useGlobalStore } from '../stores/global-store'
-
+  import { ref, computed, onBeforeUnmount, onMounted } from 'vue'
+  import { useStore } from 'vuex'
   import Navbar from '../components/navbar/Navbar.vue'
   import Sidebar from '../components/sidebar/Sidebar.vue'
 
-  const GlobalStore = useGlobalStore()
+  const store = useStore()
 
-  const mobileBreakPointPX = 640
-  const tabletBreakPointPX = 768
-
-  const sidebarWidth = ref('16rem')
-  const sidebarMinimizedWidth = ref(undefined)
-
+  // Adicione suas variáveis de estado específicas aqui
+  const isSidebarMinimized = ref(false)
   const isMobile = ref(false)
   const isTablet = ref(false)
-  const { isSidebarMinimized } = storeToRefs(GlobalStore)
-  const checkIsTablet = () => window.innerWidth <= tabletBreakPointPX
-  const checkIsMobile = () => window.innerWidth <= mobileBreakPointPX
+  const sidebarMinimizedWidth = ref('0')
+  const sidebarWidth = ref('16rem')
+
+  const checkIsTablet = () => window.innerWidth <= 768
+  const checkIsMobile = () => window.innerWidth <= 640
 
   const onResize = () => {
     isSidebarMinimized.value = checkIsTablet()
-
     isMobile.value = checkIsMobile()
     isTablet.value = checkIsTablet()
     sidebarMinimizedWidth.value = isMobile.value ? '0' : '4.5rem'
@@ -61,13 +54,6 @@
 
   onBeforeUnmount(() => {
     window.removeEventListener('resize', onResize)
-  })
-
-  onBeforeRouteUpdate(() => {
-    if (checkIsTablet()) {
-      // Collapse sidebar after route change for Mobile
-      isSidebarMinimized.value = true
-    }
   })
 
   onResize()
@@ -88,7 +74,7 @@
     display: flex;
     flex-direction: column;
     &__navbar {
-      min-height: 4rem;
+      min-height: 2rem;
     }
 
     &__content {

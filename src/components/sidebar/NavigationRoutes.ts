@@ -19,8 +19,8 @@ export default {
       },
     },
     {
-      name: 'usuários',
-      displayName: 'Usuários',
+      name: 'users',
+      displayName: 'users.users',
       meta: {
         icon: 'vuestic-iconset-user',
       },
@@ -28,16 +28,16 @@ export default {
       children: [],
     },
     {
-      name: 'produtos',
-      displayName: 'Produtos',
+      name: 'products',
+      displayName: 'products.products',
       meta: {
         icon: 'vuestic-iconset-components',
       },
       children: [],
     },
     {
-      name: 'cargas',
-      displayName: 'Cargas',
+      name: 'loads',
+      displayName: 'loads.loads',
       meta: {
         icon: 'vuestic-iconset-maps',
       },

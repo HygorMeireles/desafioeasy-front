@@ -4,8 +4,16 @@ const store = createStore({
   state: {
     successMessage: null,
     errorMessage: null,
+    isSidebarMinimized: false,
+    userName: 'Vasili S',
   },
   mutations: {
+    toggleSidebar(state) {
+      state.isSidebarMinimized = !state.isSidebarMinimized
+    },
+    changeUserName(state, userName) {
+      state.userName = userName
+    },
     setSuccessMessage(state, message) {
       state.successMessage = message
     },
