@@ -5,7 +5,7 @@
       color="#000000"
       class="mb-4"
       type="name"
-      :label="t('Nome')"
+      :label="t('users.name')"
       :error="!!nameErrors.length"
       :error-messages="nameErrors"
     />

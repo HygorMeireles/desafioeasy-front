@@ -1,6 +1,6 @@
 <template>
   <svg class="va-icon-mini-easy-logo" :height="props.height">
-    <image href="/public/MiniEasy.png" x="0" y="0" height="100%" width="100%" preserveAspectRatio="none" />
+    <image href="/MiniEasy.png" x="0" y="0" height="100%" width="100%" preserveAspectRatio="none" />
   </svg>
 </template>
 

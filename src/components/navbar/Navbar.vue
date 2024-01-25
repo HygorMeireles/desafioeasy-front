@@ -11,7 +11,7 @@
           color="white"
           @click="toggleSidebar"
         />
-        <img src="/public/logo.png" alt="Logo easy" width="60" />
+        <img src="/logo.png" alt="Logo easy" width="60" />
       </div>
     </template>
     <div class="app-navbar-center"></div>
@@ -22,7 +22,7 @@
 </template>
 
 <script setup>
-  import { computed } from 'vue'
+  import { ref, computed } from 'vue'
   import { useStore } from 'vuex'
   import { useI18n } from 'vue-i18n'
   import { useColors } from 'vuestic-ui'
@@ -33,14 +33,20 @@
   const store = useStore()
   const { t } = useI18n()
 
-  const { isSidebarMinimized, userName } = store.state
+  const isSidebarMinimized = ref(store.state.isSidebarMinimized)
 
   const { getColors } = useColors()
-  const colors = computed(() => getColors())
+  const colors = getColors()
 
   const toggleSidebar = () => {
     store.commit('toggleSidebar')
+    isSidebarMinimized.value = store.state.isSidebarMinimized
   }
+
+  // Defina a variável isFullScreenSidebar
+  const isFullScreenSidebar = computed(() => {
+    return window.innerWidth <= 640 && !isSidebarMinimized.value
+  })
 </script>
 
 <style lang="scss" scoped>
@@ -52,8 +58,8 @@
     justify-content: space-between;
     align-items: center;
     .va-icon-menu-collapsed {
-      width: 16px; /* Ajuste o tamanho conforme necessário */
-      height: 16px; /* Ajuste o tamanho conforme necessário */
+      width: 20px; /* Ajuste o tamanho conforme necessário */
+      height: 20px; /* Ajuste o tamanho conforme necessário */
     }
   }
 

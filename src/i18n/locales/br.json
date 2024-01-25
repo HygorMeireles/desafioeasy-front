@@ -240,11 +240,11 @@
       "country": "País"
     }
   },
-  "auth":{
-  "login":"Login",
-  "password":"Password",
-  "createNewAccount":"Criar uma nova conta",
-  "sign_up":"Criar"
+  "auth": {
+    "login": "Login",
+    "password": "Password",
+    "createNewAccount": "Criar uma nova conta",
+    "sign_up": "Criar"
   },
   "user": {
     "language": "Trocar Linguagem",
@@ -253,7 +253,7 @@
   },
   "users": {
     "users": "Usuários",
-    "name": "Nome",
+    "name": "Name",
     "login": "Login"
   },
   "products": {
