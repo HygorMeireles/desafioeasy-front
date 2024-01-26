@@ -6,10 +6,10 @@
     <template #left>
       <div class="left">
         <va-icon-menu-collapsed
-          :class="{ 'x-flip': isSidebarMinimized }"
+          :class="{ 'x-flip': !isSidebarMinimized }"
           class="va-navbar__item"
           color="white"
-          @click="toggleSidebar"
+          @click="$emit('toggle-sidebar')"
         />
         <img src="/logo.png" alt="Logo easy" width="60" />
       </div>
@@ -33,7 +33,7 @@
   const store = useStore()
   const { t } = useI18n()
 
-  const isSidebarMinimized = ref(store.state.isSidebarMinimized)
+  const isSidebarMinimized = computed(() => store.state.isSidebarMinimized)
 
   const { getColors } = useColors()
   const colors = getColors()

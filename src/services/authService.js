@@ -15,7 +15,6 @@ axios.interceptors.request.use(
     return Promise.reject(error)
   },
 )
-
 let authenticated = !!localStorage.getItem(TOKEN_KEY)
 
 export function isLoggedIn() {
@@ -43,7 +42,6 @@ export async function login(login, password) {
 
 export async function logout() {
   try {
-    // Adicione este log para verificar o token antes do logout
     const token = getToken()
 
     await axios.delete('http://localhost:3001/logout', {

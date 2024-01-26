@@ -3,6 +3,7 @@
     v-for="(route, idx) in items"
     :key="idx"
     v-model="dropdownsValue[idx]"
+    style="color: white"
     placement="right-start"
     prevent-overflow
     :offset="[1, 0]"

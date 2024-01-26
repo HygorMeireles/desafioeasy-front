@@ -1,40 +1,17 @@
 <template>
   <div class="app-navbar-actions">
     <language-dropdown class="app-navbar-actions__item" />
-    <profile-dropdown class="app-navbar-actions__item app-navbar-actions__item--profile">
-      <span>{{ userName }}</span>
-    </profile-dropdown>
+    <profile-dropdown class="app-navbar-actions__item app-navbar-actions__item--profile"> </profile-dropdown>
   </div>
 </template>
 
 <script setup lang="ts">
+  import { computed, onMounted } from 'vue'
+  import { useStore } from 'vuex'
   import LanguageDropdown from './dropdowns/LanguageDropdown.vue'
   import ProfileDropdown from './dropdowns/ProfileDropdown.vue'
 
-  withDefaults(
-    defineProps<{
-      userName?: string
-      isTopBar?: boolean
-    }>(),
-    {
-      userName: '',
-      isTopBar: false,
-    },
-  )
-
-  defineEmits<{
-    (e: 'update:isTopBar', isTopBar: boolean): void
-  }>()
-
-  // const isTopBarProxy = computed({
-  //   get() {
-  //     return props.isTopBar
-  //   },
-  //
-  //   set(isTopBar: boolean) {
-  //     emit('update:isTopBar', isTopBar)
-  //   },
-  // })
+  const store = useStore()
 </script>
 
 <style lang="scss">

@@ -25,7 +25,6 @@ export default {
         icon: 'vuestic-iconset-user',
       },
       disabled: true,
-      children: [],
     },
     {
       name: 'products',
@@ -33,7 +32,7 @@ export default {
       meta: {
         icon: 'vuestic-iconset-components',
       },
-      children: [],
+      disabled: true,
     },
     {
       name: 'loads',
@@ -42,7 +41,6 @@ export default {
         icon: 'vuestic-iconset-maps',
       },
       disabled: true,
-      children: [],
     },
   ] as INavigationRoute[],
 }

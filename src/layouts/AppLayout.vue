@@ -1,10 +1,10 @@
 <template>
   <div class="app-layout">
-    <navbar />
+    <navbar @toggle-sidebar="toggleSidebar" />
     <div class="app-layout__content">
       <div class="app-layout__sidebar-wrapper" :class="{ minimized: isSidebarMinimized }">
         <div v-if="isFullScreenSidebar" class="flex justify-end">
-          <va-button class="px-4 py-4" icon="md_close" preset="plain" color="dark" @click="onCloseSidebarButtonClick" />
+          <va-button class="px-4 py-4" icon="md_close" preset="plain" color="dark" @click="$emit('toggle-sidebar')" />
         </div>
         <sidebar
           :width="sidebarWidth"
@@ -31,12 +31,12 @@
   const store = useStore()
 
   // Adicione suas variáveis de estado específicas aqui
-  const isSidebarMinimized = ref(false)
+
   const isMobile = ref(false)
   const isTablet = ref(false)
   const sidebarMinimizedWidth = ref('0')
   const sidebarWidth = ref('16rem')
-
+  const isSidebarMinimized = computed(() => store.state.isSidebarMinimized)
   const checkIsTablet = () => window.innerWidth <= 768
   const checkIsMobile = () => window.innerWidth <= 640
 
@@ -62,6 +62,10 @@
 
   const onCloseSidebarButtonClick = () => {
     isSidebarMinimized.value = true
+  }
+
+  const toggleSidebar = () => {
+    store.commit('toggleSidebar')
   }
 </script>
 

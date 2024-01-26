@@ -1,11 +1,10 @@
 import { createStore } from 'vuex'
-
+import axios from 'axios'
 const store = createStore({
   state: {
     successMessage: null,
     errorMessage: null,
     isSidebarMinimized: false,
-    userName: 'Vasili S',
   },
   mutations: {
     toggleSidebar(state) {

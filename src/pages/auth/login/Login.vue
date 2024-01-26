@@ -90,7 +90,7 @@
         store.commit('setSuccessMessage', '')
 
         router.push({ name: 'dashboard' })
-      }, 5000)
+      }, 0)
     } catch (error) {
       if (error.response && error.response.status === 401) {
         errorMessage.value = 'Senha ou login incorretos. Tente novamente.'

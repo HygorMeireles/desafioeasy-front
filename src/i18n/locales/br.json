@@ -252,6 +252,7 @@
     "profile": "Meu Perfil"
   },
   "users": {
+    "id": "id",
     "users": "Usuários",
     "name": "Name",
     "login": "Login"

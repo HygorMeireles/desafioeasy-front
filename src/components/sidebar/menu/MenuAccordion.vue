@@ -2,20 +2,28 @@
   <va-accordion v-model="accordionValue" class="sidebar-accordion va-sidebar__menu__inner" multiple>
     <va-collapse v-for="(route, idx) in items" :key="idx">
       <template #header>
-        <va-sidebar-item :active="isRouteActive(route)" :to="route.children ? undefined : { name: route.name }">
+        <va-sidebar-item
+          style="color: white"
+          :class="{ 'active-sidebar-item': isRouteActive(route) }"
+          :active="isRouteActive(route)"
+          :to="route.children ? undefined : { name: route.name }"
+        >
           <va-sidebar-item-content>
             <va-icon :name="route.meta.icon" class="va-sidebar-item__icon" />
 
             <va-sidebar-item-title>
               {{ t(route.displayName) }}
             </va-sidebar-item-title>
-
-            <va-icon v-if="route.children" :name="accordionValue[idx] ? 'expand_less' : 'expand_more'" />
+            <va-icon v-if="route.children" />
           </va-sidebar-item-content>
         </va-sidebar-item>
       </template>
       <template v-for="(child, index) in route.children" :key="index">
-        <va-sidebar-item :active="isRouteActive(child)" :to="{ name: child.name }">
+        <va-sidebar-item
+          :class="{ 'active-sidebar-item': isRouteActive(child) }"
+          :active="isRouteActive(child)"
+          :to="{ name: child.name }"
+        >
           <va-sidebar-item-content>
             <div class="va-sidebar-item__icon" />
 
@@ -68,3 +76,16 @@
     return isCurrentItemActive || isChildActive
   }
 </script>
+
+<style>
+  .active-sidebar-item {
+    color: white !important;
+    background-color: #ee2954 !important;
+    border-color: white !important;
+  }
+
+  .va-sidebar-item:hover {
+    background-color: #ee2954 !important;
+    color: white !important;
+  }
+</style>
