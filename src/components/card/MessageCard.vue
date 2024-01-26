@@ -3,7 +3,6 @@
     {{ message }}
   </div>
 </template>
-
 <script setup>
   const props = defineProps(['type', 'message'])
 </script>

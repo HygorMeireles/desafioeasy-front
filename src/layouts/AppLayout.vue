@@ -2,7 +2,7 @@
   <div class="app-layout">
     <navbar @toggle-sidebar="toggleSidebar" />
     <div class="app-layout__content">
-      <div class="app-layout__sidebar-wrapper" :class="{ minimized: isSidebarMinimized }">
+      <div class="app-layout__sidebar-wrapper" style="color: white" :class="{ minimized: isSidebarMinimized }">
         <div v-if="isFullScreenSidebar" class="flex justify-end">
           <va-button class="px-4 py-4" icon="md_close" preset="plain" color="dark" @click="$emit('toggle-sidebar')" />
         </div>
@@ -115,6 +115,7 @@
     &__page {
       flex-grow: 2;
       overflow-y: scroll;
+      background-color: #ffffff !important;
     }
   }
 </style>

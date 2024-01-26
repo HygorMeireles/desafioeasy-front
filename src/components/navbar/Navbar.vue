@@ -11,7 +11,7 @@
           color="white"
           @click="$emit('toggle-sidebar')"
         />
-        <img src="/logo.png" alt="Logo easy" width="60" />
+        <img src="/logo.png" alt="Logo easy" width="75" />
       </div>
     </template>
     <div class="app-navbar-center"></div>
