@@ -88,7 +88,6 @@
       setTimeout(() => {
         successMessage.value = ''
         store.commit('setSuccessMessage', '')
-
         router.push({ name: 'dashboard' })
       }, 0)
     } catch (error) {

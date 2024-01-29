@@ -5,11 +5,12 @@ import Page404Layout from '../layouts/Page404Layout.vue'
 import RouteViewComponent from '../layouts/RouterBypass.vue'
 import UIRoute from '../pages/admin/ui/route'
 import { isLoggedIn } from '../services/authService'
+
 const isAuthenticated = false
 const routes: Array<RouteRecordRaw> = [
   {
-    path: '/:catchAll(.*)',
-    redirect: { name: 'login' },
+    path: '/erro',
+    component: () => import('@/components/ErrorPage.vue'),
   },
   {
     name: 'admin',
@@ -17,6 +18,10 @@ const routes: Array<RouteRecordRaw> = [
     component: AppLayout,
     meta: { requiresAuth: true },
     children: [
+      {
+        path: '/erro',
+        component: () => import('@/components/ErrorPage.vue'),
+      },
       {
         name: 'dashboard',
         path: 'dashboard',
@@ -127,13 +132,19 @@ const routes: Array<RouteRecordRaw> = [
           if (isLoggedIn()) {
             next({ name: 'dashboard' })
           } else {
-            next()
+            next({ name: 'erro' })
           }
         },
       },
       {
         path: '',
-        redirect: isAuthenticated ? { name: 'dashboard' } : { name: 'login' },
+        redirect: (to) => {
+          if (isAuthenticated && to.query.logout !== 'true') {
+            return { name: 'login' }
+          } else {
+            return { name: 'login' }
+          }
+        },
       },
     ],
   },
@@ -162,6 +173,10 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('../pages/404-pages/VaPageNotFoundLargeText.vue'),
       },
     ],
+  },
+  {
+    path: '/:catchAll(.*)',
+    redirect: { name: 'login' },
   },
 ]
 

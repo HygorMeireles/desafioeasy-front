@@ -91,10 +91,15 @@
   import { useStore } from 'vuex'
   import MessageCard from '@/components/card/MessageCard.vue'
   import moment from 'moment-timezone'
+  import { useRouter } from 'vue-router'
 
   export default {
     components: {
       MessageCard,
+    },
+    setup() {
+      const router = useRouter()
+      return { router }
     },
     data() {
       return {
@@ -142,6 +147,7 @@
           this.totalPages = response.data.totalPages
         } catch (error) {
           console.error('Erro ao obter cargas:', error)
+          this.$router.push({ path: '/erro' })
         }
       },
       changePage(newPage) {

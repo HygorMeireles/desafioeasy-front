@@ -136,6 +136,7 @@
           this.totalPages = response.data.totalPages
         } catch (error) {
           console.error('Erro ao obter usuários:', error)
+          this.$router.push({ path: '/erro' })
         }
       },
       changePage(newPage) {

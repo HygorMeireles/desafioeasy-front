@@ -134,6 +134,7 @@
           this.totalPages = response.data.totalPages
         } catch (error) {
           console.error('Erro ao obter produtos:', error)
+          this.$router.push({ path: '/erro' })
         }
       },
       changePage(newPage) {
