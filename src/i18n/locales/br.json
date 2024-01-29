@@ -258,11 +258,13 @@
     "login": "Login"
   },
   "products": {
+    "id": "id",
     "products": "Produtos",
     "name": "Nome do produto",
     "ballast": "Lastro"
   },
   "loads": {
+    "id": "id",
     "loads": "Cargas",
     "code": "Código",
     "delivery_date": "Data de entrega"

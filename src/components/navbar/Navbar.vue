@@ -53,13 +53,17 @@
   .va-navbar {
     box-shadow: var(--va-box-shadow);
     z-index: 2;
-    height: 0.5vh; /* Alterado para usar unidades de viewport */
+    height: 0.5vh;
+    /* Alterado para usar unidades de viewport */
     display: flex;
     justify-content: space-between;
     align-items: center;
+
     .va-icon-menu-collapsed {
-      width: 20px; /* Ajuste o tamanho conforme necessário */
-      height: 20px; /* Ajuste o tamanho conforme necessário */
+      width: 20px;
+      /* Ajuste o tamanho conforme necessário */
+      height: 20px;
+      /* Ajuste o tamanho conforme necessário */
     }
   }
 

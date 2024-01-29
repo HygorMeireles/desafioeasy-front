@@ -14,6 +14,7 @@
 
 <style lang="scss" scoped>
   @import 'flag-icons/css/flag-icons.css';
+
   .language-dropdown {
     display: inline-block;
   }

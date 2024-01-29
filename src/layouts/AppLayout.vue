@@ -77,6 +77,7 @@
     height: 100vh;
     display: flex;
     flex-direction: column;
+
     &__navbar {
       min-height: 2rem;
     }
@@ -112,6 +113,7 @@
         }
       }
     }
+
     &__page {
       flex-grow: 2;
       overflow-y: scroll;

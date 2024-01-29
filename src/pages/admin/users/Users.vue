@@ -1,4 +1,8 @@
 <template>
+  <tr style="color: black">
+    Adicionar novo usuário:
+  </tr>
+  <br />
   <div class="flex justify-between items-center mb-4">
     <va-input v-model="newUser.name" placeholder="Nome" class="mr-2" />
     <va-input v-model="newUser.login" placeholder="Login" class="mr-2" />
@@ -157,7 +161,7 @@
           }, 5000)
         } catch (error) {
           const errorMessage =
-            error.response && error.response.data ? error.response.data.message : 'Erro ao criar usuário'
+            error.response && error.response.data ? error.response.data.message : 'Erro ao criar o usuário'
           this.$store.commit('setErrorMessage', errorMessage)
           console.error('Erro ao criar usuário:', error)
 
@@ -184,9 +188,8 @@
             this.$store.commit('setSuccessMessage', '')
           }, 5000)
         } catch (error) {
-          const errorMessage = 'Erro ao excluir usuário'
+          const errorMessage = 'Erro, você não pode excluir seu próprio usuário'
           this.$store.commit('setErrorMessage', errorMessage)
-          console.error('Erro ao excluir usuário:', error)
 
           setTimeout(() => {
             this.$store.commit('setErrorMessage', '')
@@ -267,9 +270,11 @@
     margin: 0 5px;
     border-radius: 4px;
   }
+
   .va-input-wrapper--focused {
     --va-input-wrapper-border-color: #000000;
   }
+
   .edit-button .va-icon {
     color: #f44336 !important;
   }

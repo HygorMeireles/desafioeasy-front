@@ -10,7 +10,6 @@
         <a href="mailto:hello@epicmax.co" :style="{ color: colors.primary }" class="va-link">hello@epicmax.co </a>
       </div>
       <slot />
-      <!-- <va-button v-if="!withoutButton" :to="{ name: 'dashboard' }">{{t('404.back_button')}}</va-button> -->
     </div>
     <made-by-component />
     <div class="va-page-not-found__wallpaper">

@@ -1,5 +1,5 @@
 import { createStore } from 'vuex'
-import axios from 'axios'
+
 const store = createStore({
   state: {
     successMessage: null,
@@ -9,9 +9,6 @@ const store = createStore({
   mutations: {
     toggleSidebar(state) {
       state.isSidebarMinimized = !state.isSidebarMinimized
-    },
-    changeUserName(state, userName) {
-      state.userName = userName
     },
     setSuccessMessage(state, message) {
       state.successMessage = message
