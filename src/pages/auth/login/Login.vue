@@ -71,9 +71,9 @@
   async function onsubmit() {
     if (!formReady.value) return
 
-    loginErrors.value = loginField.value ? [] : ['Login é obrigatório']
+    loginErrors.value = loginField.value ? [] : ['Login é obrigatório.']
 
-    passwordErrors.value = passwordField.value.length >= 6 ? [] : ['A senha deve ter pelo menos 6 caracteres']
+    passwordErrors.value = passwordField.value.length >= 6 ? [] : ['A senha deve ter pelo menos 6 caracteres.']
 
     if (passwordErrors.value.length > 0) {
       return
@@ -81,7 +81,7 @@
 
     try {
       await login(loginField.value, passwordField.value)
-      successMessage.value = 'Login efetuado com sucesso'
+      successMessage.value = 'Login efetuado com sucesso!'
       errorMessage.value = ''
       store.commit('setSuccessMessage', successMessage.value)
 
@@ -94,7 +94,7 @@
       if (error.response && error.response.status === 401) {
         errorMessage.value = 'Senha ou login incorretos. Tente novamente.'
       } else {
-        errorMessage.value = 'Erro ao realizar o login'
+        errorMessage.value = 'Erro ao realizar o login!'
       }
 
       successMessage.value = ''
@@ -104,8 +104,6 @@
         errorMessage.value = ''
         store.commit('setErrorMessage', '')
       }, 5000)
-
-      console.error('Login failed:', error)
     }
   }
 </script>

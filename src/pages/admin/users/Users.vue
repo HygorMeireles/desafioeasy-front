@@ -135,7 +135,6 @@
           this.users = response.data.users
           this.totalPages = response.data.totalPages
         } catch (error) {
-          console.error('Erro ao obter usuários:', error)
           this.$router.push({ path: '/erro' })
         }
       },
@@ -162,10 +161,8 @@
           }, 5000)
         } catch (error) {
           const errorMessage =
-            error.response && error.response.data ? error.response.data.message : 'Erro ao criar o usuário'
+            error.response && error.response.data ? error.response.data.message : 'Erro ao criar o usuário!'
           this.$store.commit('setErrorMessage', errorMessage)
-          console.error('Erro ao criar usuário:', error)
-
           setTimeout(() => {
             this.$store.commit('setErrorMessage', '')
           }, 5000)
@@ -181,7 +178,7 @@
             headers: { Authorization: `Bearer ${token}` },
           })
 
-          const successMessage = 'Usuário excluído com sucesso'
+          const successMessage = 'Usuário excluído com sucesso!'
           this.$store.commit('setSuccessMessage', successMessage)
           this.fetchUsers()
 
@@ -189,7 +186,7 @@
             this.$store.commit('setSuccessMessage', '')
           }, 5000)
         } catch (error) {
-          const errorMessage = 'Erro, você não pode excluir seu próprio usuário'
+          const errorMessage = 'Erro! Você não pode excluir seu próprio usuário!'
           this.$store.commit('setErrorMessage', errorMessage)
 
           setTimeout(() => {
@@ -270,6 +267,10 @@
     color: #ffffff !important;
     margin: 0 5px;
     border-radius: 4px;
+  }
+  .va-input-wrapper__field input,
+  .va-input-wrapper__field textarea {
+    color: #f44336 !important;
   }
 
   .va-input-wrapper--focused {

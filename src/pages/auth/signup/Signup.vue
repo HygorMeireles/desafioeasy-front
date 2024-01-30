@@ -84,10 +84,10 @@
   async function onsubmit() {
     if (!formReady.value) return
 
-    nameErrors.value = name.value ? [] : ['Nome é obrigatório']
-    loginErrors.value = login.value ? [] : ['Login é obrigatório']
+    nameErrors.value = name.value ? [] : ['Nome é obrigatório.']
+    loginErrors.value = login.value ? [] : ['Login é obrigatório.']
 
-    passwordErrors.value = password.value.length >= 6 ? [] : ['A senha deve ter pelo menos 6 caracteres']
+    passwordErrors.value = password.value.length >= 6 ? [] : ['A senha deve ter pelo menos 6 caracteres.']
 
     if (passwordErrors.value.length > 0) {
       return
@@ -97,7 +97,7 @@
       const response = await axios.post('http://localhost:3001/signup', {
         user: { name: name.value, login: login.value, password: password.value },
       })
-      successMessage.value = 'Conta criada com sucesso'
+      successMessage.value = 'Conta criada com sucesso!'
       errorMessage.value = ''
       store.commit('setSuccessMessage', successMessage.value)
 
@@ -107,7 +107,7 @@
         router.push({ name: 'login' })
       }, 2000)
     } catch (error) {
-      errorMessage.value = 'Erro ao criar uma nova conta'
+      errorMessage.value = 'Erro ao criar uma nova conta.'
       successMessage.value = ''
       store.commit('setErrorMessage', errorMessage.value)
 
@@ -115,8 +115,6 @@
         errorMessage.value = ''
         store.commit('setErrorMessage', '')
       }, 5000)
-
-      console.error('Signup failed:', error)
     }
   }
 </script>

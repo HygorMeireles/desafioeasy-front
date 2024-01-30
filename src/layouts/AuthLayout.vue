@@ -2,7 +2,7 @@
   <div class="auth-layout grid grid-cols-12 content-center">
     <div class="flex col-span-12 p-4 justify-center">
       <div class="py-5 justify-center flex" to="/">
-        <easy-logo height="150" />
+        <easy-logo height="155" />
       </div>
     </div>
 
@@ -65,6 +65,10 @@
       width: 100%;
       max-width: 500px;
       max-height: 350px;
+    }
+    .va-input-wrapper__field input,
+    .va-input-wrapper__field textarea {
+      color: #000000 !important;
     }
   }
 </style>

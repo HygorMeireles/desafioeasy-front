@@ -132,7 +132,7 @@ const routes: Array<RouteRecordRaw> = [
           if (isLoggedIn()) {
             next({ name: 'dashboard' })
           } else {
-            next({ name: 'erro' })
+            next()
           }
         },
       },

@@ -133,7 +133,6 @@
           this.products = response.data.products
           this.totalPages = response.data.totalPages
         } catch (error) {
-          console.error('Erro ao obter produtos:', error)
           this.$router.push({ path: '/erro' })
         }
       },
@@ -160,10 +159,8 @@
           }, 5000)
         } catch (error) {
           const errorMessage =
-            error.response && error.response.data ? error.response.data.message : 'Erro ao criar o produto'
+            error.response && error.response.data ? error.response.data.message : 'Erro ao criar o produto!'
           this.$store.commit('setErrorMessage', errorMessage)
-          console.error('Erro ao criar o produto:', error)
-
           setTimeout(() => {
             this.$store.commit('setErrorMessage', '')
           }, 5000)
@@ -179,7 +176,7 @@
             headers: { Authorization: `Bearer ${token}` },
           })
 
-          const successMessage = 'Produto excluído com sucesso'
+          const successMessage = 'Produto excluído com sucesso!'
           this.$store.commit('setSuccessMessage', successMessage)
           this.fetchProducts()
 
@@ -187,7 +184,7 @@
             this.$store.commit('setSuccessMessage', '')
           }, 5000)
         } catch (error) {
-          const errorMessage = 'Erro ao excluir o produto'
+          const errorMessage = 'Erro ao excluir o produto!'
           this.$store.commit('setErrorMessage', errorMessage)
 
           setTimeout(() => {
@@ -218,7 +215,7 @@
             (product) => product.id !== productId && product.name === productToUpdate.name,
           )
           if (isDuplicate) {
-            const errorMessage = 'Erro: Esse produto já existe!'
+            const errorMessage = 'Erro! Esse produto já existe!'
             this.$store.commit('setErrorMessage', errorMessage)
             setTimeout(() => {
               this.$store.commit('setErrorMessage', '')
@@ -270,6 +267,10 @@
     color: #ffffff !important;
     margin: 0 5px;
     border-radius: 4px;
+  }
+  .va-input-wrapper__field input,
+  .va-input-wrapper__field textarea {
+    color: #f44336 !important;
   }
 
   .va-input-wrapper--focused {

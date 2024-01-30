@@ -146,7 +146,6 @@
           this.loads = response.data.loads
           this.totalPages = response.data.totalPages
         } catch (error) {
-          console.error('Erro ao obter cargas:', error)
           this.$router.push({ path: '/erro' })
         }
       },
@@ -171,12 +170,10 @@
           setTimeout(() => {
             this.$store.commit('setSuccessMessage', '')
           }, 5000)
-          window.location.reload()
         } catch (error) {
           const errorMessage =
             error.response && error.response.data ? error.response.data.message : 'Erro ao criar a carga'
           this.$store.commit('setErrorMessage', errorMessage)
-          console.error('Erro ao criar a carga:', error)
 
           setTimeout(() => {
             this.$store.commit('setErrorMessage', '')
