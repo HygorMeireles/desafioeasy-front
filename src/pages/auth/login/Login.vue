@@ -94,7 +94,7 @@
       if (error.response && error.response.status === 401) {
         errorMessage.value = 'Senha ou login incorretos. Tente novamente.'
       } else {
-        errorMessage.value = 'Erro ao realizar o login!'
+        errorMessage.value = 'Senha ou login incorretos. Tente novamente.'
       }
 
       successMessage.value = ''

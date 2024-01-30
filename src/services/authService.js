@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios from '@/axios'
 import router from '@/router'
 
 const TOKEN_KEY = 'authToken'
@@ -23,7 +23,7 @@ export function isLoggedIn() {
 
 export async function login(login, password) {
   try {
-    const response = await axios.post('http://localhost:3001/login', { user: { login, password } })
+    const response = await axios.post('/login', { user: { login, password } })
 
     const authToken = response.data.authentication_token
 
@@ -44,7 +44,7 @@ export async function logout() {
   try {
     const token = getToken()
 
-    await axios.delete('http://localhost:3001/logout', {
+    await axios.delete('/logout', {
       headers: {
         Authorization: `Bearer ${token}`,
       },

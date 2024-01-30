@@ -14,7 +14,7 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     name: 'admin',
-    path: '/admin',
+    path: '',
     component: AppLayout,
     meta: { requiresAuth: true },
     children: [
@@ -42,70 +42,6 @@ const routes: Array<RouteRecordRaw> = [
         path: 'loads',
         component: () => import('../pages/admin/loads/Loads.vue'),
       },
-      {
-        name: 'forms',
-        path: 'forms',
-        component: RouteViewComponent,
-        children: [
-          {
-            name: 'form-elements',
-            path: 'form-elements',
-            component: () => import('../pages/admin/forms/form-elements/FormElements.vue'),
-            meta: {
-              wikiLink: 'https://github.com/epicmaxco/vuestic-admin/wiki/inputs',
-            },
-          },
-          {
-            name: 'medium-editor',
-            path: 'medium-editor',
-            component: () => import('../pages/admin/forms/medium-editor/MediumEditor.vue'),
-            meta: {
-              wikiLink: 'https://github.com/epicmaxco/vuestic-admin/wiki/Medium-Editor',
-            },
-          },
-        ],
-      },
-      {
-        name: 'tables',
-        path: 'tables',
-        component: RouteViewComponent,
-        children: [
-          {
-            name: 'markup',
-            path: 'markup',
-            component: () => import('../pages/admin/tables/markup-tables/MarkupTables.vue'),
-            meta: {
-              wikiLink: 'https://github.com/epicmaxco/vuestic-admin/wiki/Tables',
-            },
-          },
-          {
-            name: 'data',
-            path: 'data',
-            component: () => import('../pages/admin/tables/data-tables/DataTables.vue'),
-            meta: {
-              wikiLink: 'https://github.com/epicmaxco/vuestic-admin/wiki/Tables',
-            },
-          },
-        ],
-      },
-      {
-        name: 'pages',
-        path: 'pages',
-        component: RouteViewComponent,
-        children: [
-          {
-            name: '404-pages',
-            path: '404-pages',
-            component: () => import('../pages/admin/pages/404PagesPage.vue'),
-          },
-          {
-            name: 'faq',
-            path: 'faq',
-            component: () => import('../pages/admin/pages/FaqPage.vue'),
-          },
-        ],
-      },
-      UIRoute,
     ],
   },
   {
@@ -145,32 +81,6 @@ const routes: Array<RouteRecordRaw> = [
             return { name: 'login' }
           }
         },
-      },
-    ],
-  },
-  {
-    path: '/404',
-    component: Page404Layout,
-    children: [
-      {
-        name: 'not-found-advanced',
-        path: 'not-found-advanced',
-        component: () => import('../pages/404-pages/VaPageNotFoundSearch.vue'),
-      },
-      {
-        name: 'not-found-simple',
-        path: 'not-found-simple',
-        component: () => import('../pages/404-pages/VaPageNotFoundSimple.vue'),
-      },
-      {
-        name: 'not-found-custom',
-        path: 'not-found-custom',
-        component: () => import('../pages/404-pages/VaPageNotFoundCustom.vue'),
-      },
-      {
-        name: 'not-found-large-text',
-        path: '/pages/not-found-large-text',
-        component: () => import('../pages/404-pages/VaPageNotFoundLargeText.vue'),
       },
     ],
   },

@@ -87,7 +87,7 @@
 </template>
 
 <script>
-  import axios from 'axios'
+  import axios from '@/axios'
   import { useStore } from 'vuex'
   import MessageCard from '@/components/card/MessageCard.vue'
 
@@ -127,10 +127,8 @@
     methods: {
       async fetchUsers() {
         try {
-          const token = localStorage.getItem('authToken')
-          const response = await axios.get('http://localhost:3001/admin/v1/users', {
+          const response = await axios.get('/admin/v1/users', {
             params: { page: this.currentPage },
-            headers: { Authorization: `Bearer ${token}` },
           })
           this.users = response.data.users
           this.totalPages = response.data.totalPages
@@ -142,20 +140,14 @@
         this.currentPage = newPage
         this.fetchUsers()
       },
-
       async createUser() {
         try {
-          const token = localStorage.getItem('authToken')
           const userData = { user: this.newUser }
-          await axios.post('http://localhost:3001/admin/v1/users', userData, {
-            headers: { Authorization: `Bearer ${token}` },
-          })
-
+          await axios.post('/admin/v1/users', userData, {})
           const successMessage = 'Usuário criado com sucesso!'
           this.$store.commit('setSuccessMessage', successMessage)
           this.resetNewUser()
           this.fetchUsers()
-
           setTimeout(() => {
             this.$store.commit('setSuccessMessage', '')
           }, 5000)
@@ -173,11 +165,7 @@
       },
       async deleteUser(userId) {
         try {
-          const token = localStorage.getItem('authToken')
-          await axios.delete(`http://localhost:3001/admin/v1/users/${userId}`, {
-            headers: { Authorization: `Bearer ${token}` },
-          })
-
+          await axios.delete(`/admin/v1/users/${userId}`, {})
           const successMessage = 'Usuário excluído com sucesso!'
           this.$store.commit('setSuccessMessage', successMessage)
           this.fetchUsers()
@@ -196,13 +184,11 @@
       },
       async editUser() {
         try {
-          const token = localStorage.getItem('authToken')
           const userId = this.editedUser.id
           const userToUpdate = {
             name: this.editedUser.name,
             login: this.editedUser.login,
           }
-
           const currentUser = this.users.find((user) => user.id === userId)
           if (currentUser.name === userToUpdate.name && currentUser.login === userToUpdate.login) {
             const errorMessage = 'Erro! Você não pode editar pelo mesmo nome e login!'
@@ -212,7 +198,6 @@
             }, 5000)
             return
           }
-
           const isDuplicate = this.users.some((user) => user.id !== userId && user.login === userToUpdate.login)
           if (isDuplicate) {
             const errorMessage = 'Erro: Esse Login já existe!'
@@ -222,16 +207,11 @@
             }, 5000)
             return
           }
-
-          await axios.put(`http://localhost:3001/admin/v1/users/${userId}`, userToUpdate, {
-            headers: { Authorization: `Bearer ${token}` },
-          })
-
+          await axios.put(`/admin/v1/users/${userId}`, userToUpdate, {})
           const successMessage = 'Usuário editado com sucesso!'
           this.$store.commit('setSuccessMessage', successMessage)
           this.resetEditedUser()
           this.fetchUsers()
-
           setTimeout(() => {
             this.$store.commit('setSuccessMessage', '')
           }, 5000)
@@ -268,6 +248,7 @@
     margin: 0 5px;
     border-radius: 4px;
   }
+
   .va-input-wrapper__field input,
   .va-input-wrapper__field textarea {
     color: #f44336 !important;

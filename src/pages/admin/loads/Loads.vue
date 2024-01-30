@@ -87,7 +87,7 @@
 </template>
 
 <script>
-  import axios from 'axios'
+  import axios from '@/axios'
   import { useStore } from 'vuex'
   import MessageCard from '@/components/card/MessageCard.vue'
   import moment from 'moment-timezone'
@@ -138,10 +138,8 @@
       },
       async fetchLoads() {
         try {
-          const token = localStorage.getItem('authToken')
-          const response = await axios.get('http://localhost:3001/admin/v1/loads', {
+          const response = await axios.get('/admin/v1/loads', {
             params: { page: this.currentPage },
-            headers: { Authorization: `Bearer ${token}` },
           })
           this.loads = response.data.loads
           this.totalPages = response.data.totalPages
@@ -153,20 +151,14 @@
         this.currentPage = newPage
         this.fetchLoads()
       },
-
       async createLoad() {
         try {
-          const token = localStorage.getItem('authToken')
           const loadData = { load: this.newLoad }
-          await axios.post('http://localhost:3001/admin/v1/loads', loadData, {
-            headers: { Authorization: `Bearer ${token}` },
-          })
-
+          await axios.post('/admin/v1/loads', loadData, {})
           const successMessage = 'Carga criada com sucesso!'
           this.$store.commit('setSuccessMessage', successMessage)
           this.resetNewLoad()
           this.fetchLoads()
-
           setTimeout(() => {
             this.$store.commit('setSuccessMessage', '')
           }, 5000)
@@ -182,22 +174,16 @@
       },
       async deleteLoad(loadId) {
         try {
-          const token = localStorage.getItem('authToken')
-          await axios.delete(`http://localhost:3001/admin/v1/loads/${loadId}`, {
-            headers: { Authorization: `Bearer ${token}` },
-          })
-
+          await axios.delete(`/admin/v1/loads/${loadId}`, {})
           const successMessage = 'Carga excluída com sucesso!'
           this.$store.commit('setSuccessMessage', successMessage)
           this.fetchLoads()
-
           setTimeout(() => {
             this.$store.commit('setSuccessMessage', '')
           }, 5000)
         } catch (error) {
           const errorMessage = 'Erro ao excluir a carga'
           this.$store.commit('setErrorMessage', errorMessage)
-
           setTimeout(() => {
             this.$store.commit('setErrorMessage', '')
           }, 5000)
@@ -205,13 +191,11 @@
       },
       async editLoad() {
         try {
-          const token = localStorage.getItem('authToken')
           const loadId = this.editedLoad.id
           const loadToUpdate = {
             code: this.editedLoad.code,
             delivery_date: this.editedLoad.delivery_date,
           }
-
           const currentLoad = this.loads.find((load) => load.id === loadId)
           if (currentLoad.code === loadToUpdate.code && currentLoad.delivery_date === loadToUpdate.delivery_date) {
             const errorMessage = 'Erro! Você não pode editar pelo mesmo código e data de entrega!'
@@ -221,7 +205,6 @@
             }, 5000)
             return
           }
-
           const isDuplicate = this.loads.some((load) => load.id !== loadId && load.code === loadToUpdate.code)
           if (isDuplicate) {
             const errorMessage = 'Erro: Essa carga já existe!'
@@ -231,11 +214,7 @@
             }, 5000)
             return
           }
-
-          await axios.put(`http://localhost:3001/admin/v1/loads/${loadId}`, loadToUpdate, {
-            headers: { Authorization: `Bearer ${token}` },
-          })
-
+          await axios.put(`/admin/v1/loads/${loadId}`, loadToUpdate, {})
           const successMessage = 'Carga editada com sucesso!'
           this.$store.commit('setSuccessMessage', successMessage)
           this.resetEditedLoad()

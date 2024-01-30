@@ -86,7 +86,7 @@
 </template>
 
 <script>
-  import axios from 'axios'
+  import axios from '@/axios'
   import { useStore } from 'vuex'
   import MessageCard from '@/components/card/MessageCard.vue'
 
@@ -125,10 +125,8 @@
     methods: {
       async fetchProducts() {
         try {
-          const token = localStorage.getItem('authToken')
-          const response = await axios.get('http://localhost:3001/admin/v1/products', {
+          const response = await axios.get('/admin/v1/products', {
             params: { page: this.currentPage },
-            headers: { Authorization: `Bearer ${token}` },
           })
           this.products = response.data.products
           this.totalPages = response.data.totalPages
@@ -140,20 +138,14 @@
         this.currentPage = newPage
         this.fetchProducts()
       },
-
       async createProduct() {
         try {
-          const token = localStorage.getItem('authToken')
           const productData = { product: this.newProduct }
-          await axios.post('http://localhost:3001/admin/v1/products', productData, {
-            headers: { Authorization: `Bearer ${token}` },
-          })
-
+          await axios.post('/admin/v1/products', productData, {})
           const successMessage = 'Produto criado com sucesso!'
           this.$store.commit('setSuccessMessage', successMessage)
           this.resetNewProduct()
           this.fetchProducts()
-
           setTimeout(() => {
             this.$store.commit('setSuccessMessage', '')
           }, 5000)
@@ -171,11 +163,7 @@
       },
       async deleteProduct(productId) {
         try {
-          const token = localStorage.getItem('authToken')
-          await axios.delete(`http://localhost:3001/admin/v1/products/${productId}`, {
-            headers: { Authorization: `Bearer ${token}` },
-          })
-
+          await axios.delete(`/admin/v1/products/${productId}`, {})
           const successMessage = 'Produto excluído com sucesso!'
           this.$store.commit('setSuccessMessage', successMessage)
           this.fetchProducts()
@@ -194,13 +182,11 @@
       },
       async editProduct() {
         try {
-          const token = localStorage.getItem('authToken')
           const productId = this.editedProduct.id
           const productToUpdate = {
             name: this.editedProduct.name,
             ballast: this.editedProduct.ballast,
           }
-
           const currentProduct = this.products.find((product) => product.id === productId)
           if (currentProduct.name === productToUpdate.name && currentProduct.ballast === productToUpdate.ballast) {
             const errorMessage = 'Erro! Você não pode editar pelo mesmo nome e lastro!'
@@ -210,7 +196,6 @@
             }, 5000)
             return
           }
-
           const isDuplicate = this.products.some(
             (product) => product.id !== productId && product.name === productToUpdate.name,
           )
@@ -222,11 +207,7 @@
             }, 5000)
             return
           }
-
-          await axios.put(`http://localhost:3001/admin/v1/products/${productId}`, productToUpdate, {
-            headers: { Authorization: `Bearer ${token}` },
-          })
-
+          await axios.put(`/admin/v1/products/${productId}`, productToUpdate, {})
           const successMessage = 'Produto editado com sucesso!'
           this.$store.commit('setSuccessMessage', successMessage)
           this.resetEditedProduct()

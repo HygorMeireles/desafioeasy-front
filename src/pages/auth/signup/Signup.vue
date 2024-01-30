@@ -55,7 +55,7 @@
 </template>
 
 <script setup lang="ts">
-  import axios from 'axios'
+  import axios from '@/axios'
   import { ref, computed } from 'vue'
   import { useRouter } from 'vue-router'
   import { useStore } from 'vuex'
@@ -94,7 +94,7 @@
     }
 
     try {
-      const response = await axios.post('http://localhost:3001/signup', {
+      const response = await axios.post('/signup', {
         user: { name: name.value, login: login.value, password: password.value },
       })
       successMessage.value = 'Conta criada com sucesso!'
@@ -107,7 +107,7 @@
         router.push({ name: 'login' })
       }, 2000)
     } catch (error) {
-      errorMessage.value = 'Erro ao criar uma nova conta.'
+      errorMessage.value = 'Erro ao criar uma nova conta, parâmetros inválidos ou esse login já existe.'
       successMessage.value = ''
       store.commit('setErrorMessage', errorMessage.value)
 
