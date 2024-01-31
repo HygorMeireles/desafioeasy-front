@@ -1,17 +1,37 @@
 <template>
   <div class="app-navbar-actions">
     <language-dropdown class="app-navbar-actions__item" />
-    <profile-dropdown class="app-navbar-actions__item app-navbar-actions__item--profile"> </profile-dropdown>
+    <profile-dropdown class="app-navbar-actions__item app-navbar-actions__item--profile">
+      <span v-if="currentUser">{{ currentUser.name }}</span>
+    </profile-dropdown>
   </div>
 </template>
 
 <script setup lang="ts">
-  import { computed, onMounted } from 'vue'
-  import { useStore } from 'vuex'
+  import { ref, onMounted } from 'vue'
+  import axios from '@/axios'
   import LanguageDropdown from './dropdowns/LanguageDropdown.vue'
   import ProfileDropdown from './dropdowns/ProfileDropdown.vue'
 
-  const store = useStore()
+  const currentUser = ref<User | null>(null)
+
+  interface User {
+    id: number
+    name: string
+  }
+
+  onMounted(async () => {
+    await fetchCurrentUser()
+  })
+
+  const fetchCurrentUser = async () => {
+    try {
+      const response = await axios.get('/admin/v1/users/current')
+      currentUser.value = response.data
+    } catch (error) {
+      console.error('Erro ao buscar o usuário atual', error)
+    }
+  }
 </script>
 
 <style lang="scss">

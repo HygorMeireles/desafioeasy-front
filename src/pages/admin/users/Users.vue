@@ -61,18 +61,18 @@
 
   <div class="flex justify-center mt-4 items-center">
     <va-button
-      style="--va-0-background-color: #cb0127"
+      style="--va-0-background-color: #f44336"
       class="pagination-button"
       :disabled="currentPage <= 1"
       @click="changePage(currentPage - 1)"
     >
       &lt;
     </va-button>
-    <va-button style="--va-0-background-color: #cb0127" class="pagination-number" :disabled="true">
+    <va-button style="--va-0-background-color: #f44336" class="pagination-number" :disabled="true">
       {{ currentPage }}
     </va-button>
     <va-button
-      style="--va-0-background-color: #cb0127"
+      style="--va-0-background-color: #f44336"
       class="pagination-button"
       :disabled="users.length < usersPerPage || currentPage >= totalPages"
       @click="changePage(currentPage + 1)"
@@ -144,7 +144,7 @@
         try {
           const userData = { user: this.newUser }
           await axios.post('/admin/v1/users', userData, {})
-          const successMessage = 'Usuário criado com sucesso!'
+          const successMessage = 'Usuário adicionado com sucesso!'
           this.$store.commit('setSuccessMessage', successMessage)
           this.resetNewUser()
           this.fetchUsers()

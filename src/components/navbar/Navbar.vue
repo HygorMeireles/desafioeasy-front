@@ -11,7 +11,7 @@
           color="white"
           @click="$emit('toggle-sidebar')"
         />
-        <img src="/logo.png" alt="Logo easy" width="75" />
+        <img src="/logo.png" alt="Logo easy" width="90" />
       </div>
     </template>
     <div class="app-navbar-center"></div>
@@ -43,7 +43,7 @@
     isSidebarMinimized.value = store.state.isSidebarMinimized
   }
 
-  // Defina a variável isFullScreenSidebar
+  // Define a variável isFullScreenSidebar
   const isFullScreenSidebar = computed(() => {
     return window.innerWidth <= 640 && !isSidebarMinimized.value
   })
@@ -53,17 +53,15 @@
   .va-navbar {
     box-shadow: var(--va-box-shadow);
     z-index: 2;
-    height: 0.5vh;
-    /* Alterado para usar unidades de viewport */
+    height: 5vh;
     display: flex;
     justify-content: space-between;
     align-items: center;
 
+    //ajuste de tamanho do icone de fechar o menu
     .va-icon-menu-collapsed {
       width: 20px;
-      /* Ajuste o tamanho conforme necessário */
       height: 20px;
-      /* Ajuste o tamanho conforme necessário */
     }
   }
 

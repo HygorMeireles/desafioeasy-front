@@ -61,18 +61,18 @@
 
   <div class="flex justify-center mt-4 items-center">
     <va-button
-      style="--va-0-background-color: #cb0127"
+      style="--va-0-background-color: #f44336"
       class="pagination-button"
       :disabled="currentPage <= 1"
       @click="changePage(currentPage - 1)"
     >
       &lt;
     </va-button>
-    <va-button style="--va-0-background-color: #cb0127" class="pagination-number" :disabled="true">
+    <va-button style="--va-0-background-color: #f44336" class="pagination-number" :disabled="true">
       {{ currentPage }}
     </va-button>
     <va-button
-      style="--va-0-background-color: #cb0127"
+      style="--va-0-background-color: #f44336"
       class="pagination-button"
       :disabled="loads.length < loadsPerPage || currentPage >= totalPages"
       @click="changePage(currentPage + 1)"
