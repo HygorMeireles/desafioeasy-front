@@ -203,7 +203,7 @@
             currentLoad.code === loadToUpdate.code &&
             currentDeliveryDate.getTime() === loadToUpdate.delivery_date.getTime()
           ) {
-            const errorMessage = 'Erro! Você tem que editar pelo menos um valor!'
+            const errorMessage = 'Erro! Você precisa editar pelo menos um valor!'
             this.$store.commit('setErrorMessage', errorMessage)
             setTimeout(() => {
               this.$store.commit('setErrorMessage', '')
@@ -229,7 +229,7 @@
             this.$store.commit('setSuccessMessage', '')
           }, 5000)
         } catch (error) {
-          const errorMessage = 'Erro ao editar a carga!(você precisa preencher com uma data de entrega)'
+          const errorMessage = 'Erro ao editar a carga!'
           this.$store.commit('setErrorMessage', errorMessage)
 
           setTimeout(() => {
