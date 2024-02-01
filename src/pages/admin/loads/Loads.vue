@@ -133,7 +133,7 @@
       resetNewLoad() {
         this.newLoad = {
           code: '',
-          delivery_date: new Date(),
+          delivery_date: null,
         }
       },
       async fetchLoads() {
@@ -197,8 +197,13 @@
             delivery_date: this.editedLoad.delivery_date,
           }
           const currentLoad = this.loads.find((load) => load.id === loadId)
-          if (currentLoad.code === loadToUpdate.code && currentLoad.delivery_date === loadToUpdate.delivery_date) {
-            const errorMessage = 'Erro! Você não pode editar pelo mesmo código e data de entrega!'
+          const [year, month, day] = currentLoad.delivery_date.split('-')
+          const currentDeliveryDate = new Date(year, month - 1, day)
+          if (
+            currentLoad.code === loadToUpdate.code &&
+            currentDeliveryDate.getTime() === loadToUpdate.delivery_date.getTime()
+          ) {
+            const errorMessage = 'Erro! Você tem que editar pelo menos um valor!'
             this.$store.commit('setErrorMessage', errorMessage)
             setTimeout(() => {
               this.$store.commit('setErrorMessage', '')
@@ -233,9 +238,10 @@
         }
       },
       openModalToEditLoad(load) {
+        const [year, month, day] = load.delivery_date.split('-')
         this.editedLoad = {
           ...load,
-          delivery_date: null,
+          delivery_date: new Date(year, month - 1, day),
         }
       },
       resetEditedLoad() {

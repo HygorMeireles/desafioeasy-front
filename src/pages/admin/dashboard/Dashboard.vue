@@ -26,7 +26,6 @@
   import Icones from '@/components/Icones.vue'
 
   const items = ref([
-    { src: '/Login.png' },
     { src: '/pag1.png' },
     { src: '/pag2.png' },
     { src: '/pag3.png' },

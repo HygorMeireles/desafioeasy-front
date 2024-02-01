@@ -191,7 +191,7 @@
           }
           const currentUser = this.users.find((user) => user.id === userId)
           if (currentUser.name === userToUpdate.name && currentUser.login === userToUpdate.login) {
-            const errorMessage = 'Erro! Você não pode editar pelo mesmo nome e login!'
+            const errorMessage = 'Erro! Você tem que editar pelo menos um valor!'
             this.$store.commit('setErrorMessage', errorMessage)
             setTimeout(() => {
               this.$store.commit('setErrorMessage', '')

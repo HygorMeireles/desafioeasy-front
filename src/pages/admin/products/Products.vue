@@ -189,7 +189,7 @@
           }
           const currentProduct = this.products.find((product) => product.id === productId)
           if (currentProduct.name === productToUpdate.name && currentProduct.ballast === productToUpdate.ballast) {
-            const errorMessage = 'Erro! Você não pode editar pelo mesmo nome e lastro!'
+            const errorMessage = 'Erro! Você tem que editar pelo menos um valor!'
             this.$store.commit('setErrorMessage', errorMessage)
             setTimeout(() => {
               this.$store.commit('setErrorMessage', '')
