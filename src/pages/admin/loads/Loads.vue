@@ -29,11 +29,10 @@
             <td>
               <va-button preset="plain" icon="edit" class="edit-button" @click="openModalToEditLoad(load)" />
               <va-button
-                v-if="load.id !== currentLoadId"
                 preset="plain"
                 icon="delete"
                 class="delete-button ml-3"
-                @click="deleteLoad(load.id)"
+                @click="openModalToDeleteLoad(load.id)"
               />
             </td>
           </tr>
@@ -59,27 +58,33 @@
     </div>
   </VaModal>
 
+  <VaModal
+    style="--va-input-wrapper-border-color: #f44336 !important"
+    class="modal-crud"
+    :model-value="deletedLoad !== null"
+    size="small"
+    ok-text="Confirmar"
+    cancel-text="Cancelar"
+    @ok="deleteLoad(deletedLoad.id)"
+    @cancel="resetDeletedLoad"
+  >
+    <div>
+      <tr>
+        Você tem certeza de que deseja excluir?
+      </tr>
+    </div>
+  </VaModal>
+
   <div class="flex justify-center mt-4 items-center">
-    <va-button
-      style="--va-0-background-color: #f44336"
-      class="pagination-button"
-      :disabled="currentPage <= 1"
-      @click="changePage(currentPage - 1)"
-    >
-      &lt;
-    </va-button>
-    <va-button style="--va-0-background-color: #f44336" class="pagination-number" :disabled="true">
-      {{ currentPage }}
-    </va-button>
-    <va-button
-      style="--va-0-background-color: #f44336"
-      class="pagination-button"
-      :disabled="loads.length < loadsPerPage || currentPage >= totalPages"
-      @click="changePage(currentPage + 1)"
-    >
-      &gt;
-    </va-button>
+    <VaPagination
+      v-model="currentPage"
+      :pages="totalPages"
+      :visible-pages="4"
+      class="justify-center"
+      @update:modelValue="changePage"
+    />
   </div>
+
   <div>
     <message-card v-if="successMessage" type="success" :message="successMessage" />
     <message-card v-if="errorMessage" type="error" :message="errorMessage" />
@@ -108,6 +113,7 @@
         totalPages: 0,
         loadsPerPage: 10,
         editedLoad: null,
+        deletedLoad: null,
         currentLoadId: null,
         newLoad: {
           code: '',
@@ -141,8 +147,10 @@
           const response = await axios.get('/admin/v1/loads', {
             params: { page: this.currentPage },
           })
+          console.log(response.data)
           this.loads = response.data.loads
-          this.totalPages = response.data.totalPages
+          this.totalPages = response.data.meta.total_pages
+          this.currentPage = response.data.meta.page
         } catch (error) {
           this.$router.push({ path: '/erro' })
         }
@@ -174,10 +182,11 @@
       },
       async deleteLoad(loadId) {
         try {
-          await axios.delete(`/admin/v1/loads/${loadId}`, {})
+          await axios.delete(`/admin/v1/loads/${loadId}`)
           const successMessage = 'Carga excluída com sucesso!'
           this.$store.commit('setSuccessMessage', successMessage)
           this.fetchLoads()
+          this.resetDeletedLoad()
           setTimeout(() => {
             this.$store.commit('setSuccessMessage', '')
           }, 5000)
@@ -244,8 +253,14 @@
           delivery_date: new Date(year, month - 1, day),
         }
       },
+      openModalToDeleteLoad(loadId) {
+        this.deletedLoad = this.loads.find((load) => load.id === loadId)
+      },
       resetEditedLoad() {
         this.editedLoad = null
+      },
+      resetDeletedLoad() {
+        this.deletedLoad = null
       },
     },
   }

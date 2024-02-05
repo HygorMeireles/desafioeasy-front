@@ -32,7 +32,7 @@
                 preset="plain"
                 icon="delete"
                 class="delete-button ml-3"
-                @click="deleteProduct(product.id)"
+                @click="openModalToDeleteProduct(product.id)"
               />
             </td>
           </tr>
@@ -58,26 +58,31 @@
     </div>
   </VaModal>
 
+  <VaModal
+    style="--va-input-wrapper-border-color: #f44336 !important"
+    class="modal-crud"
+    :model-value="deletedProduct !== null"
+    size="small"
+    ok-text="Confirmar"
+    cancel-text="Cancelar"
+    @ok="deleteProduct(deletedProduct.id)"
+    @cancel="resetDeletedProduct"
+  >
+    <div>
+      <tr>
+        Você tem certeza de que deseja excluir?
+      </tr>
+    </div>
+  </VaModal>
+
   <div class="flex justify-center mt-4 items-center">
-    <va-button
-      style="--va-0-background-color: #f44336"
-      class="pagination-button"
-      :disabled="currentPage <= 1"
-      @click="changePage(currentPage - 1)"
-    >
-      &lt;
-    </va-button>
-    <va-button style="--va-0-background-color: #f44336" class="pagination-number" :disabled="true">
-      {{ currentPage }}
-    </va-button>
-    <va-button
-      style="--va-0-background-color: #f44336"
-      class="pagination-button"
-      :disabled="products.length < productsPerPage || currentPage >= totalPages"
-      @click="changePage(currentPage + 1)"
-    >
-      &gt;
-    </va-button>
+    <VaPagination
+      v-model="currentPage"
+      :pages="totalPages"
+      :visible-pages="4"
+      class="justify-center"
+      @update:modelValue="changePage"
+    />
   </div>
   <div>
     <message-card v-if="successMessage" type="success" :message="successMessage" />
@@ -101,6 +106,7 @@
         totalPages: 0,
         productsPerPage: 10,
         editedProduct: null,
+        deletedProduct: null,
         currentProductId: null,
         newProduct: {
           name: '',
@@ -129,7 +135,8 @@
             params: { page: this.currentPage },
           })
           this.products = response.data.products
-          this.totalPages = response.data.totalPages
+          this.totalPages = response.data.meta.total_pages
+          this.currentPage = response.data.meta.page
         } catch (error) {
           this.$router.push({ path: '/erro' })
         }
@@ -167,7 +174,7 @@
           const successMessage = 'Produto excluído com sucesso!'
           this.$store.commit('setSuccessMessage', successMessage)
           this.fetchProducts()
-
+          this.resetDeletedProduct()
           setTimeout(() => {
             this.$store.commit('setSuccessMessage', '')
           }, 5000)
@@ -228,8 +235,14 @@
       openModalToEditProduct(product) {
         this.editedProduct = { ...product }
       },
+      openModalToDeleteProduct(productId) {
+        this.deletedProduct = this.products.find((product) => product.id === productId)
+      },
       resetEditedProduct() {
         this.editedProduct = null
+      },
+      resetDeletedProduct() {
+        this.deletedProduct = null
       },
     },
   }
@@ -249,6 +262,7 @@
     margin: 0 5px;
     border-radius: 4px;
   }
+
   .va-input-wrapper__field input,
   .va-input-wrapper__field textarea {
     color: #f44336 !important;
