@@ -308,4 +308,12 @@
   .modal-crud .va-button:nth-of-type(2):hover {
     background-color: #3e8e41 !important;
   }
+
+  .va-button--current {
+    --va-0-background-color: #f44336 !important;
+    color: white !important;
+  }
+  .va-button--normal {
+    color: black !important;
+  }
 </style>

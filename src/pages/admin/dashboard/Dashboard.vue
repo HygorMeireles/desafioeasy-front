@@ -70,4 +70,12 @@
   .material-icons {
       color: rgb(255, 255, 255)!important;
   }
+
+  .va-button--current{
+    --va-0-background-color: #f44336 !important;
+    color: white!important;
+  }
+  .va-button--normal{
+    color: black !important;
+  }
 </style>

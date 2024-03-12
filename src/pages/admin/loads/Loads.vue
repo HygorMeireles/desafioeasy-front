@@ -341,7 +341,13 @@
     --va-0-bg: #f44336 !important;
     --va-1-text-color-computed: white !important;
   }
-
+  .va-button--current {
+    --va-0-background-color: #f44336 !important;
+    color: white !important;
+  }
+  .va-button--normal {
+    color: black !important;
+  }
   .material-icons {
     color: #f44336 !important;
   }
