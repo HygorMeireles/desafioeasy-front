@@ -19,6 +19,7 @@
             <th>{{ 'Código' }}</th>
             <th>{{ 'Data de entrega' }}</th>
             <th>{{ 'Ações' }}</th>
+            <th>{{ 'Visualizar listas das cargas' }}</th>
           </tr>
         </thead>
         <tbody>
@@ -34,6 +35,10 @@
                 class="delete-button ml-3"
                 @click="openModalToDeleteLoad(load.id)"
               />
+            </td>
+
+            <td>
+              <va-button preset="plain" icon="eye" class="delete-button ml-3" @click="openConfirmation(load.id)" />
             </td>
           </tr>
         </tbody>
@@ -70,7 +75,30 @@
   >
     <div>
       <tr>
-        Você tem certeza de que deseja excluir?
+        Você tem certeza de que deseja excluir a carga
+        {{
+          selectedLoadId
+        }}?
+      </tr>
+    </div>
+  </VaModal>
+
+  <VaModal
+    style="--va-input-wrapper-border-color: #f44336 !important"
+    class="modal-crud"
+    :model-value="showModal"
+    size="small"
+    ok-text="Sim"
+    cancel-text="Não"
+    @ok="confirmAction"
+    @cancel="cancelAction"
+  >
+    <div>
+      <tr>
+        Você tem certeza de que deseja visualizar a lista da carga
+        {{
+          selectedLoadId
+        }}?
       </tr>
     </div>
   </VaModal>
@@ -115,6 +143,8 @@
         editedLoad: null,
         deletedLoad: null,
         currentLoadId: null,
+        showModal: false,
+        selectedLoadId: null,
         newLoad: {
           code: '',
           delivery_date: null,
@@ -246,6 +276,21 @@
           }, 5000)
         }
       },
+      openConfirmation(loadId) {
+        this.selectedLoadId = loadId
+        this.showModal = true
+      },
+      confirmAction() {
+        this.showModal = false
+
+        this.$router.push({ name: 'LoadOrders', params: { loadId: this.selectedLoadId } }).catch((err) => {
+          console.error(err)
+        })
+      },
+      cancelAction() {
+        this.showModal = false
+        this.selectedLoadId = null
+      },
       openModalToEditLoad(load) {
         const [year, month, day] = load.delivery_date.split('-')
         this.editedLoad = {
@@ -254,6 +299,7 @@
         }
       },
       openModalToDeleteLoad(loadId) {
+        this.selectedLoadId = loadId
         this.deletedLoad = this.loads.find((load) => load.id === loadId)
       },
       resetEditedLoad() {
@@ -341,13 +387,16 @@
     --va-0-bg: #f44336 !important;
     --va-1-text-color-computed: white !important;
   }
+
   .va-button--current {
     --va-0-background-color: #f44336 !important;
     color: white !important;
   }
+
   .va-button--normal {
     color: black !important;
   }
+
   .material-icons {
     color: #f44336 !important;
   }

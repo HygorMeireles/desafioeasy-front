@@ -42,6 +42,12 @@ const routes: Array<RouteRecordRaw> = [
         path: 'loads',
         component: () => import('../pages/admin/loads/Loads.vue'),
       },
+      {
+        path: '/loads/:loadId/orders',
+        name: 'LoadOrders',
+        component: () => import('../pages/admin/orders/Orders.vue'),
+        props: true,
+      },
     ],
   },
   {
