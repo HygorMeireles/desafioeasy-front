@@ -177,7 +177,6 @@
           const response = await axios.get('/admin/v1/loads', {
             params: { page: this.currentPage },
           })
-          console.log(response.data)
           this.loads = response.data.loads
           this.totalPages = response.data.meta.total_pages
           this.currentPage = response.data.meta.page

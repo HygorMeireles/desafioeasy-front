@@ -1,8 +1,134 @@
 <template>
-  <div v-if="orders.length">
-    <div v-for="order in orders" :key="order.id">{{ order.code }} - {{ order.bay }}</div>
+  <tr style="color: black">
+    Adicionar nova lista para a carga
+    {{
+      loadId
+    }}:
+  </tr>
+  <br />
+  <div class="flex justify-between items-center mb-4">
+    <va-input v-model="newOrder.code" placeholder="Código" class="mr-2" />
+    <va-input v-model="newOrder.bay" placeholder="Baia" class="mr-2" />
+    <va-input v-model="newOrder.load_id" :placeholder="`${loadId}`" class="mr-2" />
+
+    <va-button style="--va-0-background-color: #f44336" @click="createOrder">Adicionar</va-button>
   </div>
-  <div v-else>Não foram encontradas listas para esta carga.</div>
+
+  <va-card class="markup-tables mb-8">
+    <va-card-content class="overflow-auto">
+      <table class="va-table va-table--striped va-table--hoverable w-full">
+        <thead>
+          <tr>
+            <th>{{ 'ID' }}</th>
+            <th>{{ 'Código' }}</th>
+            <th>{{ 'Baia' }}</th>
+            <th>{{ 'Ações' }}</th>
+            <th>{{ 'Visualizar produtos da lista' }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="order in orders" :key="order.id">
+            <td>{{ order.id }}</td>
+            <td>{{ order.code }}</td>
+            <td>{{ order.bay }}</td>
+            <td>
+              <va-button preset="plain" icon="edit" class="edit-button" @click="openModalToEditOrder(order)" />
+              <va-button
+                preset="plain"
+                icon="delete"
+                class="delete-button ml-3"
+                @click="openModalToDeleteOrder(order.id)"
+              />
+            </td>
+
+            <td>
+              <va-button preset="plain" icon="eye" class="delete-button ml-3" @click="openConfirmation(order.id)" />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </va-card-content>
+  </va-card>
+
+  <VaModal
+    style="--va-input-wrapper-border-color: #f44336 !important"
+    class="modal-crud"
+    :model-value="editedOrder !== null"
+    :title="editedOrder ? `Editar lista ${editedOrder.id} da carga ${loadId}` : `Carregando...`"
+    size="small"
+    ok-text="Confirmar"
+    cancel-text="Cancelar"
+    @ok="editOrder"
+    @cancel="resetEditedOrder"
+  >
+    <div>
+      <VaInput v-model="editedOrder.code" label="Código" class="my-2 input-code" />
+      <VaInput v-model="editedOrder.bay" label="Baia" class="mr-2 input-bay" />
+    </div>
+  </VaModal>
+
+  <VaModal
+    style="--va-input-wrapper-border-color: #f44336 !important"
+    class="modal-crud"
+    :model-value="deletedOrder !== null"
+    size="small"
+    ok-text="Sim"
+    cancel-text="Não"
+    @ok="deleteOrder(deletedOrder.id)"
+    @cancel="resetDeletedOrder"
+  >
+    <div>
+      <tr>
+        Você tem certeza de que deseja excluir a lista
+        {{
+          selectedOrderId
+        }}
+        da carga
+        {{
+          loadId
+        }}?
+      </tr>
+    </div>
+  </VaModal>
+
+  <VaModal
+    style="--va-input-wrapper-border-color: #f44336 !important"
+    class="modal-crud"
+    :model-value="showModal"
+    size="small"
+    ok-text="Sim"
+    cancel-text="Não"
+    @ok="confirmAction"
+    @cancel="cancelAction"
+  >
+    <div>
+      <tr>
+        Você tem certeza de que deseja visualizar os produtos da lista
+        {{
+          selectedOrderId
+        }}
+        da carga
+        {{
+          loadId
+        }}?
+      </tr>
+    </div>
+  </VaModal>
+
+  <div class="flex justify-center mt-4 items-center">
+    <VaPagination
+      v-model="currentPage"
+      :pages="totalPages"
+      :visible-pages="4"
+      class="justify-center"
+      @update:modelValue="changePage"
+    />
+  </div>
+
+  <div>
+    <message-card v-if="successMessage" type="success" :message="successMessage" />
+    <message-card v-if="errorMessage" type="error" :message="errorMessage" />
+  </div>
 </template>
 
 <script>
@@ -13,45 +139,282 @@
   import { useRouter } from 'vue-router'
 
   export default {
+    components: {
+      MessageCard,
+    },
     props: {
       loadId: {
         type: Number,
         required: true,
       },
     },
+    setup() {
+      const router = useRouter()
+      return { router }
+    },
     data() {
       return {
         orders: [],
+        currentPage: 1,
+        totalPages: 0,
+        ordersPerPage: 10,
+        editedOrder: null,
+        deletedOrder: null,
+        currentOrderId: null,
+        showModal: false,
+        selectedOrderId: null,
+        newOrder: {
+          code: '',
+          bay: '',
+          load_id: '',
+        },
       }
     },
-    created() {
+    computed: {
+      successMessage() {
+        return this.$store.state.successMessage
+      },
+      errorMessage() {
+        return this.$store.state.errorMessage
+      },
+    },
+    mounted() {
       this.fetchOrders()
     },
     methods: {
+      resetNewOrder() {
+        this.newOrder = {
+          code: '',
+          bay: '',
+          load_id: '',
+        }
+      },
       async fetchOrders() {
         try {
-          const response = await axios.get(`/admin/v1/loads/${this.loadId}/orders`)
-          console.log(response)
+          const response = await axios.get(`/admin/v1/loads/${this.loadId}/orders`, {
+            params: { page: this.currentPage },
+          })
           this.orders = response.data
-          console.log('Listas carregadas:', this.orders)
+          this.totalPages = response.data.meta.total_pages
+          this.currentPage = response.data.meta.page
         } catch (error) {
           console.error('Erro ao buscar listas:', error)
         }
+      },
+      changePage(newPage) {
+        this.currentPage = newPage
+        this.fetchOrders()
+      },
+      async createOrder() {
+        try {
+          const orderData = { order: this.newOrder }
+          await axios.post(`/admin/v1/loads/${this.loadId}/orders`, orderData, {})
+          const successMessage = 'Lista criada com sucesso!'
+          this.$store.commit('setSuccessMessage', successMessage)
+          this.resetNewOrder()
+          this.fetchOrders()
+          setTimeout(() => {
+            this.$store.commit('setSuccessMessage', '')
+          }, 5000)
+        } catch (error) {
+          const errorMessage =
+            error.response && error.response.data ? error.response.data.message : 'Erro ao criar a lista'
+          this.$store.commit('setErrorMessage', errorMessage)
+
+          setTimeout(() => {
+            this.$store.commit('setErrorMessage', '')
+          }, 5000)
+        }
+      },
+      async deleteOrder(orderId) {
+        try {
+          await axios.delete(`/admin/v1/loads/${this.loadId}/orders/${orderId}`)
+          const successMessage = 'Lista excluída com sucesso!'
+          this.$store.commit('setSuccessMessage', successMessage)
+          this.fetchOrders()
+          this.resetDeletedOrder()
+          setTimeout(() => {
+            this.$store.commit('setSuccessMessage', '')
+          }, 5000)
+        } catch (error) {
+          const errorMessage = 'Erro ao excluir a lista'
+          this.$store.commit('setErrorMessage', errorMessage)
+          setTimeout(() => {
+            this.$store.commit('setErrorMessage', '')
+          }, 5000)
+        }
+      },
+      async editOrder() {
+        try {
+          const orderId = this.editedOrder.id
+          const orderToUpdate = {
+            code: this.editedOrder.code,
+            bay: this.editedOrder.bay,
+          }
+          const currentOrder = this.orders.find((order) => order.id === orderId)
+          if (currentOrder.code === orderToUpdate.code && currentOrder.bay === orderToUpdate.bay) {
+            const errorMessage = 'Erro! Você precisa editar pelo menos um valor!'
+            this.$store.commit('setErrorMessage', errorMessage)
+            setTimeout(() => {
+              this.$store.commit('setErrorMessage', '')
+            }, 5000)
+            return
+          }
+          const isDuplicate = this.orders.some((order) => order.id !== orderId && order.code === orderToUpdate.code)
+          if (isDuplicate) {
+            const errorMessage = 'Erro: Essa lista já existe!'
+            this.$store.commit('setErrorMessage', errorMessage)
+            setTimeout(() => {
+              this.$store.commit('setErrorMessage', '')
+            }, 5000)
+            return
+          }
+          await axios.put(`/admin/v1/loads/${this.loadId}/orders/${orderId}`, orderToUpdate, {})
+          const successMessage = 'Lista editada com sucesso!'
+          this.$store.commit('setSuccessMessage', successMessage)
+          this.resetEditedOrder()
+          this.fetchOrders()
+
+          setTimeout(() => {
+            this.$store.commit('setSuccessMessage', '')
+          }, 5000)
+        } catch (error) {
+          const errorMessage = 'Erro ao editar a lista!'
+          this.$store.commit('setErrorMessage', errorMessage)
+
+          setTimeout(() => {
+            this.$store.commit('setErrorMessage', '')
+          }, 5000)
+        }
+      },
+      openConfirmation(orderId) {
+        this.selectedOrderId = orderId
+        this.showModal = true
+      },
+      confirmAction() {
+        this.showModal = false
+
+        //  this.$router.push({ name: '', params: { loadId: this.selectedLoadId } }).catch((err) => {
+        //    console.error(err)
+        // })
+      },
+      cancelAction() {
+        this.showModal = false
+        this.selectedOrderId = null
+      },
+      openModalToEditOrder(order) {
+        this.editedOrder = {
+          ...order,
+        }
+      },
+      openModalToDeleteOrder(orderId) {
+        this.selectedOrderId = orderId
+        this.deletedOrder = this.orders.find((order) => order.id === orderId)
+      },
+      resetEditedOrder() {
+        this.editedOrder = null
+      },
+      resetDeletedOrder() {
+        this.deletedOrder = null
       },
     },
   }
 </script>
 
 <style>
-  .orders-list {
-    list-style: none;
-    padding: 0;
+  .pagination-button,
+  .pagination-number {
+    min-width: 35px;
+    height: 35px;
+    line-height: 35px;
+    text-align: center;
+    border: 1px solid #ddd !important;
+    background-color: #ffffff !important;
+    --va-0-background-color: #ee2955;
+    color: #ffffff !important;
+    margin: 0 5px;
+    border-radius: 4px;
   }
 
-  .orders-list li {
-    margin-bottom: 20px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+  .va-input-wrapper--focused {
+    --va-input-wrapper-border-color: #000000;
+  }
+
+  .va-input-wrapper__label {
+    color: #000000 !important;
+  }
+
+  .va-input-wrapper__field input,
+  .va-input-wrapper__field textarea {
+    color: #f44336 !important;
+  }
+
+  .va-button.va-button--plain.va-button--small {
+    background-color: rgb(244, 67, 54) !important;
+  }
+
+  .delete-button .va-icon {
+    color: #f44336 !important;
+  }
+
+  .modal-crud .va-modal__title {
+    color: #000000 !important;
+  }
+
+  .modal-crud .va-input input {
+    color: #f44336 !important;
+  }
+
+  .modal-crud .va-input label {
+    color: #000000 !important;
+  }
+
+  .modal-crud .va-button:first-of-type {
+    background-color: #f44336 !important;
+    color: white !important;
+  }
+
+  .modal-crud .va-button:nth-of-type(2) {
+    --va-0-background-color: #3e8e41 !important;
+    color: white !important;
+  }
+
+  .modal-crud .va-button:first-of-type:hover {
+    background-color: #d32f2f !important;
+  }
+
+  .modal-crud .va-button:nth-of-type(2):hover {
+    background-color: #3e8e41 !important;
+  }
+
+  .va-date-picker-cell {
+    --va-1-text-color-computed: white !important;
+    --va-0-bg: #f44336 !important;
+  }
+
+  .va-date-picker-cell {
+    --va-0-bg: #f44336 !important;
+    --va-1-text-color-computed: white !important;
+  }
+
+  .va-button--current {
+    --va-0-background-color: #f44336 !important;
+    color: white !important;
+  }
+
+  .va-button--normal {
+    color: black !important;
+  }
+
+  .material-icons {
+    color: #f44336 !important;
+  }
+
+  .va-date-picker-cell_selected {
+    --va-0-bg: #f44336 !important;
+  }
+
+  :root {
+    --va-primary: white;
   }
 </style>

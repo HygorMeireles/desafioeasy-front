@@ -317,4 +317,7 @@
   .va-button--normal {
     color: black !important;
   }
+  .material-icons {
+    color: #f44336 !important;
+  }
 </style>
