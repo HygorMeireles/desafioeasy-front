@@ -48,6 +48,12 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('../pages/admin/orders/Orders.vue'),
         props: true,
       },
+      {
+        path: '/loads/:loadId/orders/:orderId/order_products',
+        name: 'OrderProducts',
+        component: () => import('../pages/admin/order_products/OrderProducts.vue'),
+        props: true,
+      },
     ],
   },
   {

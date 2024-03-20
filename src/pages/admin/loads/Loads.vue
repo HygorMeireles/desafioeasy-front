@@ -95,7 +95,7 @@
   >
     <div>
       <tr>
-        Você tem certeza de que deseja visualizar a lista da carga
+        Você tem certeza de que deseja visualizar as listas da carga
         {{
           selectedLoadId
         }}?

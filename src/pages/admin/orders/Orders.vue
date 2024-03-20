@@ -293,10 +293,9 @@
       },
       confirmAction() {
         this.showModal = false
-
-        //  this.$router.push({ name: '', params: { loadId: this.selectedLoadId } }).catch((err) => {
-        //    console.error(err)
-        // })
+        this.$router.push({ name: 'OrderProducts', params: { orderId: this.selectedOrderId } }).catch((err) => {
+          console.error(err)
+        })
       },
       cancelAction() {
         this.showModal = false
