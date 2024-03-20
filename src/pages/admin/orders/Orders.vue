@@ -194,7 +194,7 @@
           const response = await axios.get(`/admin/v1/loads/${this.loadId}/orders`, {
             params: { page: this.currentPage },
           })
-          this.orders = response.data
+          this.orders = response.data.orders
           this.totalPages = response.data.meta.total_pages
           this.currentPage = response.data.meta.page
         } catch (error) {
