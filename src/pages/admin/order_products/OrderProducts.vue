@@ -3,15 +3,31 @@
     <div style="color: black">Adicionar novos produtos para a lista {{ orderId }}:</div>
     <br />
     <div class="flex justify-between items-center mb-4">
-      <va-input v-model="newOrderProduct.order_id" :placeholder="`${orderId}`" class="mr-2" disabled />
-      <VaSelect
-        v-model="newOrderProduct.product_id"
-        :options="productOptions"
-        placeholder="Selecione o produto"
+      <va-input
+        v-model="newOrderProduct.order_id"
+        label="ID da lista"
+        :placeholder="`${orderId}`"
         class="mr-2"
+        disabled
       />
+
+      <va-select
+        v-model="newOrderProduct.product_id"
+        label="ID do produto"
+        :options="productOptions"
+        :track-by="(product) => product.id"
+        label-by="text"
+        placeholder="Selecione o produto"
+        style="color: #f44336"
+        allow-create
+        class="mr-2"
+        @update:modelValue="updateSelectedOption"
+      />
+
       <va-input v-model="newOrderProduct.quantity" placeholder="Quantidade" class="mr-2" />
-      <va-checkbox v-model="newOrderProduct.box" label="Caixa" class="mr-2" />
+      <div style="color: black">Caixa(s)?</div>
+
+      <VaSwitch v-model="newOrderProduct.box" style="color: #f44336" color="#f44336" class="mr-2" />
 
       <va-button style="--va-0-background-color: #f44336" @click="createOrderProduct">Adicionar</va-button>
     </div>
@@ -25,7 +41,7 @@
               <th>ID do produto</th>
               <th>Nome do produto</th>
               <th>Quantidade</th>
-              <th>Caixa</th>
+              <th>Caixa(s)</th>
               <th>Ações</th>
             </tr>
           </thead>
@@ -68,9 +84,14 @@
       @cancel="resetEditedOrderProduct"
     >
       <div>
-        <VaInput v-model="editedOrderProduct.product_id" label="ID do produto" class="my-2 input-product_id" />
         <VaInput v-model="editedOrderProduct.quantity" label="Quantidade" class="mr-2 input-quantity" />
-        <VaCheckbox v-model="editedOrderProduct.box" label="Caixa" class="my-2 input-box" />
+        <VaSwitch
+          v-model="editedOrderProduct.box"
+          style="color: #f44336"
+          label="Caixa(s)?"
+          color="#f44336"
+          class="my-2 input-box"
+        />
       </div>
     </VaModal>
 
@@ -136,7 +157,8 @@
     computed: {
       productOptions() {
         return this.products.map((product) => ({
-          value: product.id,
+          id: product.id,
+          text: product.name,
         }))
       },
       successMessage() {
@@ -159,11 +181,15 @@
           box: false,
         }
       },
-      async fetchProducts() {
+      updateSelectedOption(product) {
+        this.newOrderProduct.product_id = product.id
+      },
+      async fetchProducts(length = 100) {
         try {
-          const response = await axios.get('/admin/v1/products')
+          const response = await axios.get('/admin/v1/products', {
+            params: { length: length },
+          })
           this.products = response.data.products
-          console.log(response.data.products)
         } catch (error) {
           console.error('Erro ao buscar produtos', error)
         }
@@ -388,6 +414,10 @@
 
   .va-date-picker-cell_selected {
     --va-0-bg: #f44336 !important;
+  }
+
+  .va-select-option__highlighted {
+    color: #f44336 !important;
   }
 
   :root {
