@@ -23,13 +23,18 @@
         class="mr-2"
         @update:modelValue="updateSelectedOption"
       />
+      <VaPopover class="mr-2" message="Criar um novo produto">
+        <VaButton icon="add_circle_outline" color="#ffff" @click="openModalToCreateNewProduct()"></VaButton>
+      </VaPopover>
 
       <va-input v-model="newOrderProduct.quantity" placeholder="Quantidade" class="mr-2" />
       <div style="color: black">Caixa(s)?</div>
 
       <VaSwitch v-model="newOrderProduct.box" style="color: #f44336" color="#f44336" class="mr-2" />
 
-      <va-button style="--va-0-background-color: #f44336" @click="createOrderProduct">Adicionar</va-button>
+      <va-button style="--va-0-background-color: #f44336; color: #ffffff !important" @click="createOrderProduct"
+        >Adicionar</va-button
+      >
     </div>
 
     <va-card class="markup-tables mb-8">
@@ -76,7 +81,7 @@
       style="--va-input-wrapper-border-color: #f44336 !important"
       class="modal-crud"
       :model-value="editedOrderProduct !== null"
-      :title="editedOrderProduct ? 'Editar' : 'Carregando...'"
+      :title="editedOrderProduct ? `Editar produto ${editedOrderProduct.id} da lista ${orderId}` : `Carregando...`"
       size="small"
       ok-text="Confirmar"
       cancel-text="Cancelar"
@@ -106,7 +111,26 @@
       @cancel="resetDeletedOrderProduct"
     >
       <div>
-        <div>Você tem certeza de que deseja excluir?</div>
+        <div>
+          Você tem certeza de que deseja excluir o(s) produto(s) {{ deletedOrderProduct.id }} da lista {{ orderId }}?
+        </div>
+      </div>
+    </VaModal>
+
+    <VaModal
+      style="--va-input-wrapper-border-color: #4caf50 !important"
+      class="modal-crud"
+      :model-value="isNewProductModalOpen"
+      title="Criar Novo Produto"
+      size="small"
+      ok-text="Criar"
+      cancel-text="Cancelar"
+      @ok="submitNewProduct"
+      @cancel="resetNewProductForm"
+    >
+      <div>
+        <VaInput v-model="newProduct.name" label="Nome do Produto"></VaInput>
+        <VaInput v-model="newProduct.ballast" label="Lastro"></VaInput>
       </div>
     </VaModal>
 
@@ -142,6 +166,11 @@
       return {
         order_products: [],
         products: [],
+        isNewProductModalOpen: false,
+        newProduct: {
+          name: '',
+          ballast: '',
+        },
         editedOrderProduct: null,
         deletedOrderProduct: null,
         currentOrderProductId: null,
@@ -173,6 +202,31 @@
       this.fetchProducts()
     },
     methods: {
+      openModalToCreateNewProduct() {
+        this.isNewProductModalOpen = true
+      },
+      resetNewProductForm() {
+        this.newProduct = { name: '', ballast: '' }
+        this.isNewProductModalOpen = false
+      },
+      async submitNewProduct() {
+        try {
+          await axios.post('/admin/v1/products', this.newProduct)
+          const successMessage = 'Produto criado com sucesso!'
+          this.$store.commit('setSuccessMessage', successMessage)
+          this.resetNewProductForm()
+          setTimeout(() => {
+            this.$store.commit('setSuccessMessage', '')
+          }, 5000)
+        } catch (error) {
+          const errorMessage =
+            error.response && error.response.data ? error.response.data.message : 'Erro ao criar o produto'
+          this.$store.commit('setErrorMessage', errorMessage)
+          setTimeout(() => {
+            this.$store.commit('setErrorMessage', '')
+          }, 5000)
+        }
+      },
       resetNewOrderProduct() {
         this.newOrderProduct = {
           order_id: '',

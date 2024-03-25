@@ -7,7 +7,9 @@
     <va-input v-model="newLoad.code" placeholder="Código" class="mr-2" />
     <vaDateInput v-model="newLoad.delivery_date" placeholder="Data de entrega" class="mr-2 custom-date-input" />
 
-    <va-button style="--va-0-background-color: #f44336" @click="createLoad">Adicionar</va-button>
+    <va-button style="--va-0-background-color: #f44336; color: #ffffff !important" @click="createLoad"
+      >Adicionar</va-button
+    >
   </div>
 
   <va-card class="markup-tables mb-8">
@@ -50,7 +52,7 @@
     style="--va-input-wrapper-border-color: #f44336 !important"
     class="modal-crud"
     :model-value="editedLoad !== null"
-    title="Editar Carga"
+    :title="editedLoad ? `Editar carga ${editedLoad.id}` : `Carregando...`"
     size="small"
     ok-text="Confirmar"
     cancel-text="Cancelar"
@@ -220,7 +222,7 @@
             this.$store.commit('setSuccessMessage', '')
           }, 5000)
         } catch (error) {
-          const errorMessage = 'Erro ao excluir a carga'
+          const errorMessage = 'Erro ao excluir a carga! (a carga possui listas)'
           this.$store.commit('setErrorMessage', errorMessage)
           setTimeout(() => {
             this.$store.commit('setErrorMessage', '')

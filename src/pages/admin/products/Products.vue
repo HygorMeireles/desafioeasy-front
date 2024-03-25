@@ -6,7 +6,9 @@
   <div class="flex justify-between items-center mb-4">
     <va-input v-model="newProduct.name" placeholder="Nome" class="mr-2" />
     <va-input v-model="newProduct.ballast" placeholder="Lastro" class="mr-2" />
-    <va-button style="--va-0-background-color: #f44336" @click="createProduct">Adicionar</va-button>
+    <va-button style="--va-0-background-color: #f44336; color: #ffffff !important" @click="createProduct"
+      >Adicionar</va-button
+    >
   </div>
 
   <va-card class="markup-tables mb-8">
@@ -45,7 +47,7 @@
     style="--va-input-wrapper-border-color: #f44336 !important"
     class="modal-crud"
     :model-value="editedProduct !== null"
-    title="Editar Produto"
+    :title="editedProduct ? `Editar produto ${editedProduct.id}` : `Carregando...`"
     size="small"
     ok-text="Confirmar"
     cancel-text="Cancelar"
@@ -70,7 +72,10 @@
   >
     <div>
       <tr>
-        Você tem certeza de que deseja excluir?
+        Você tem certeza de que deseja excluir o produto
+        {{
+          deletedProduct.id
+        }}?
       </tr>
     </div>
   </VaModal>
@@ -179,7 +184,7 @@
             this.$store.commit('setSuccessMessage', '')
           }, 5000)
         } catch (error) {
-          const errorMessage = 'Erro ao excluir o produto!'
+          const errorMessage = 'Erro ao excluir o produto! (esse produto está presente em uma lista de cargas)'
           this.$store.commit('setErrorMessage', errorMessage)
 
           setTimeout(() => {

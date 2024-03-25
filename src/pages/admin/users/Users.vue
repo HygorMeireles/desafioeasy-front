@@ -7,7 +7,9 @@
     <va-input v-model="newUser.name" placeholder="Nome" class="mr-2" />
     <va-input v-model="newUser.login" placeholder="Login" class="mr-2" />
     <va-input v-model="newUser.password" placeholder="Senha" type="password" class="mr-2" />
-    <va-button style="--va-0-background-color: #f44336" @click="createUser">Adicionar</va-button>
+    <va-button style="--va-0-background-color: #f44336; color: #ffffff !important" @click="createUser"
+      >Adicionar</va-button
+    >
   </div>
 
   <va-card class="markup-tables mb-8">
@@ -46,7 +48,7 @@
     style="--va-input-wrapper-border-color: #f44336 !important"
     class="modal-crud"
     :model-value="editedUser !== null"
-    title="Editar Usuário"
+    :title="editedUser ? `Editar usuário ${editedUser.id}` : `Carregando...`"
     size="small"
     ok-text="Confirmar"
     cancel-text="Cancelar"
@@ -71,7 +73,10 @@
   >
     <div>
       <tr>
-        Você tem certeza de que deseja excluir?
+        Você tem certeza de que deseja excluir o usuário
+        {{
+          deletedUser.id
+        }}?
       </tr>
     </div>
   </VaModal>

@@ -9,9 +9,11 @@
   <div class="flex justify-between items-center mb-4">
     <va-input v-model="newOrder.code" placeholder="Código" class="mr-2" />
     <va-input v-model="newOrder.bay" placeholder="Baia" class="mr-2" />
-    <va-input v-model="newOrder.load_id" :placeholder="`${loadId}`" class="mr-2" />
+    <va-input v-model="newOrder.load_id" label="ID da carga" :placeholder="`${loadId}`" class="mr-2" />
 
-    <va-button style="--va-0-background-color: #f44336" @click="createOrder">Adicionar</va-button>
+    <va-button style="--va-0-background-color: #f44336; color: #ffffff !important" @click="createOrder"
+      >Adicionar</va-button
+    >
   </div>
 
   <va-card class="markup-tables mb-8">
