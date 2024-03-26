@@ -18,6 +18,23 @@
 
   <va-card class="markup-tables mb-8">
     <va-card-content class="overflow-auto">
+      <va-input
+        v-model.number="perPage"
+        type="number"
+        label="Listas por página"
+        style="color: #f44336"
+        placeholder="Número de listas por página"
+        class="mr-2 mt-4 md:mt-0 md:w-1/4"
+      />
+      <va-select
+        v-model="filterByFields"
+        style="color: #f44336"
+        placeholder="Selecione campos para filtrar"
+        :options="fieldsForFilter"
+        multiple
+        class="mt-4 md:mt-0 md:w-1/2"
+      />
+      <va-input v-model="filter" placeholder="Filtrar..." class="mr-2 w-full md:w-1/5" />
       <table class="va-table va-table--striped va-table--hoverable w-full">
         <thead>
           <tr>
@@ -29,7 +46,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="order in orders" :key="order.id">
+          <tr v-for="order in filteredOrders" :key="order.id">
             <td>{{ order.id }}</td>
             <td>{{ order.code }}</td>
             <td>{{ order.bay }}</td>
@@ -139,6 +156,7 @@
   import MessageCard from '@/components/card/MessageCard.vue'
   import moment from 'moment-timezone'
   import { useRouter } from 'vue-router'
+  import { ref, computed } from 'vue'
 
   export default {
     components: {
@@ -151,14 +169,17 @@
       },
     },
     setup() {
-      const router = useRouter()
-      return { router }
+      const filter = ref('')
+      const filterByFields = ref([])
+      const fieldsForFilter = ref(['id', 'code', 'bay'])
+      return { filter, filterByFields, fieldsForFilter }
     },
     data() {
       return {
         orders: [],
         currentPage: 1,
         totalPages: 0,
+        perPage: 10,
         ordersPerPage: 10,
         editedOrder: null,
         deletedOrder: null,
@@ -173,11 +194,35 @@
       }
     },
     computed: {
+      filteredOrders() {
+        return this.orders.filter((order) => {
+          const filterLowered = this.filter.toLowerCase()
+          return (
+            !this.filter ||
+            Object.keys(order).some(
+              (key) => this.filterByFields.includes(key) && String(order[key]).toLowerCase().includes(filterLowered),
+            )
+          )
+        })
+      },
+      paginatedOrders() {
+        const start = (this.currentPage - 1) * this.perPage
+        const end = start + this.perPage
+        return this.filteredOrders.slice(start, end)
+      },
       successMessage() {
         return this.$store.state.successMessage
       },
       errorMessage() {
         return this.$store.state.errorMessage
+      },
+    },
+    watch: {
+      perPage(newVal, oldVal) {
+        if (newVal !== oldVal) {
+          this.currentPage = 1
+          this.fetchOrders()
+        }
       },
     },
     mounted() {
@@ -194,7 +239,7 @@
       async fetchOrders() {
         try {
           const response = await axios.get(`/admin/v1/loads/${this.loadId}/orders`, {
-            params: { page: this.currentPage },
+            params: { page: this.currentPage, length: this.perPage },
           })
           this.orders = response.data.orders
           this.totalPages = response.data.meta.total_pages
@@ -417,5 +462,13 @@
 
   :root {
     --va-primary: white;
+  }
+
+  .va-input-wrapper__label {
+    color: #000000 !important;
+  }
+
+  .va-select-option--selected {
+    color: #f44336 !important;
   }
 </style>

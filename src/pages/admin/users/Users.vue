@@ -11,9 +11,25 @@
       >Adicionar</va-button
     >
   </div>
-
   <va-card class="markup-tables mb-8">
     <va-card-content class="overflow-auto">
+      <va-input
+        v-model.number="perPage"
+        type="number"
+        label="Usuários por página"
+        style="color: #f44336"
+        placeholder="Número de usuários por página"
+        class="mr-2 mt-4 md:mt-0 md:w-1/4"
+      />
+      <va-select
+        v-model="filterByFields"
+        style="color: #f44336"
+        placeholder="Selecione campos para filtrar"
+        :options="fieldsForFilter"
+        multiple
+        class="mt-4 md:mt-0 md:w-1/2"
+      />
+      <va-input v-model="filter" placeholder="Filtrar..." class="mr-2 w-full md:w-1/5" />
       <table class="va-table va-table--striped va-table--hoverable w-full">
         <thead>
           <tr>
@@ -24,7 +40,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="user in users" :key="user.id">
+          <tr v-for="user in filteredUsers" :key="user.id">
             <td>{{ user.id }}</td>
             <td>{{ user.name }}</td>
             <td>{{ user.login }}</td>
@@ -100,17 +116,24 @@
   import axios from '@/axios'
   import { useStore } from 'vuex'
   import MessageCard from '@/components/card/MessageCard.vue'
+  import { ref, computed } from 'vue'
 
   export default {
     components: {
       MessageCard,
+    },
+    setup() {
+      const filter = ref('')
+      const filterByFields = ref([])
+      const fieldsForFilter = ref(['id', 'name', 'login'])
+      return { filter, filterByFields, fieldsForFilter }
     },
     data() {
       return {
         users: [],
         currentPage: 1,
         totalPages: 0,
-        usersPerPage: 10,
+        perPage: 10,
         editedUser: null,
         deletedUser: null,
         currentUserId: null,
@@ -121,7 +144,24 @@
         },
       }
     },
+
     computed: {
+      filteredUsers() {
+        return this.users.filter((user) => {
+          const filterLowered = this.filter.toLowerCase()
+          return (
+            !this.filter ||
+            Object.keys(user).some(
+              (key) => this.filterByFields.includes(key) && String(user[key]).toLowerCase().includes(filterLowered),
+            )
+          )
+        })
+      },
+      paginatedUsers() {
+        const start = (this.currentPage - 1) * this.perPage
+        const end = start + this.perPage
+        return this.filteredUsers.slice(start, end)
+      },
       successMessage() {
         return this.$store.state.successMessage
       },
@@ -132,6 +172,14 @@
         return this.newUser.name && this.newUser.login && this.newUser.password
       },
     },
+    watch: {
+      perPage(newVal, oldVal) {
+        if (newVal !== oldVal) {
+          this.currentPage = 1
+          this.fetchUsers()
+        }
+      },
+    },
     mounted() {
       this.fetchUsers()
     },
@@ -139,7 +187,7 @@
       async fetchUsers() {
         try {
           const response = await axios.get('/admin/v1/users', {
-            params: { page: this.currentPage },
+            params: { page: this.currentPage, length: this.perPage },
           })
           this.users = response.data.users
           this.totalPages = response.data.meta.total_pages
@@ -318,10 +366,20 @@
     --va-0-background-color: #f44336 !important;
     color: white !important;
   }
+
   .va-button--normal {
     color: black !important;
   }
+
   .material-icons {
+    color: #f44336 !important;
+  }
+
+  .va-input-wrapper__label {
+    color: #000000 !important;
+  }
+
+  .va-select-option--selected {
     color: #f44336 !important;
   }
 </style>

@@ -39,6 +39,15 @@
 
     <va-card class="markup-tables mb-8">
       <va-card-content class="overflow-auto">
+        <va-select
+          v-model="filterByFields"
+          style="color: #f44336"
+          placeholder="Selecione campos para filtrar"
+          :options="fieldsForFilter"
+          multiple
+          class="mt-4 md:mt-0 md:w-1/2"
+        />
+        <va-input v-model="filter" placeholder="Filtrar..." class="mr-2 w-full md:w-1/5" />
         <table class="va-table va-table--striped va-table--hoverable w-full">
           <thead>
             <tr>
@@ -51,7 +60,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="order_product in order_products" :key="order_product.id">
+            <tr v-for="order_product in filteredOrderProducts" :key="order_product.id">
               <td>{{ order_product.id }}</td>
               <td>{{ order_product.product_id }}</td>
               <td>{{ getProductName(order_product.product_id) }}</td>
@@ -147,6 +156,7 @@
   import MessageCard from '@/components/card/MessageCard.vue'
   import moment from 'moment-timezone'
   import { useRouter } from 'vue-router'
+  import { ref, computed } from 'vue'
 
   export default {
     components: {
@@ -159,8 +169,10 @@
       },
     },
     setup() {
-      const router = useRouter()
-      return { router }
+      const filter = ref('')
+      const filterByFields = ref([])
+      const fieldsForFilter = ref(['id', 'product_id', 'product_name', 'quantity', 'box'])
+      return { filter, filterByFields, fieldsForFilter }
     },
     data() {
       return {
@@ -184,6 +196,18 @@
       }
     },
     computed: {
+      filteredOrderProducts() {
+        return this.order_products.filter((order_product) => {
+          const filterLowered = this.filter.toLowerCase()
+          return (
+            !this.filter ||
+            Object.keys(order_product).some(
+              (key) =>
+                this.filterByFields.includes(key) && String(order_product[key]).toLowerCase().includes(filterLowered),
+            )
+          )
+        })
+      },
       productOptions() {
         return this.products.map((product) => ({
           id: product.id,
@@ -476,5 +500,13 @@
 
   :root {
     --va-primary: white;
+  }
+
+  .va-input-wrapper__label {
+    color: #000000 !important;
+  }
+
+  .va-select-option--selected {
+    color: #f44336 !important;
   }
 </style>
