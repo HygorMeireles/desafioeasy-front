@@ -228,7 +228,6 @@
             Nome: product ? product.name : '',
             Tipo: product ? product.product_type : '',
           }
-
           const filterLowered = this.filter.toLowerCase()
           return (
             !this.filter ||

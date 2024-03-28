@@ -45,7 +45,7 @@
           <tr v-for="load in filteredLoads" :key="load.id">
             <td>{{ load.id }}</td>
             <td>{{ load.code }}</td>
-            <td>{{ load.delivery_date }}</td>
+            <td>{{ formatDate(load.delivery_date) }}</td>
             <td>
               <va-button preset="plain" icon="edit" class="edit-button" @click="openModalToEditLoad(load)" />
               <va-button
@@ -114,7 +114,7 @@
   >
     <div>
       <tr>
-        Você tem certeza de que deseja visualizar as listas da carga
+        Visualizar as listas da carga
         {{
           selectedLoadId
         }}?
@@ -153,7 +153,7 @@
     setup() {
       const filter = ref('')
       const filterByFields = ref([])
-      const fieldsForFilter = ref(['id', 'code'])
+      const fieldsForFilter = ref(['ID', 'Código', 'Data'])
       return { filter, filterByFields, fieldsForFilter }
     },
     data() {
@@ -177,11 +177,17 @@
     computed: {
       filteredLoads() {
         return this.loads.filter((load) => {
+          const loadInfo = {
+            ...load,
+            ID: load ? load.id : '',
+            Código: load ? load.code : '',
+            Data: load ? load.delivery_date : '',
+          }
           const filterLowered = this.filter.toLowerCase()
           return (
             !this.filter ||
-            Object.keys(load).some(
-              (key) => this.filterByFields.includes(key) && String(load[key]).toLowerCase().includes(filterLowered),
+            Object.keys(loadInfo).some(
+              (key) => this.filterByFields.includes(key) && String(loadInfo[key]).toLowerCase().includes(filterLowered),
             )
           )
         })
@@ -213,6 +219,11 @@
       this.fetchLoads()
     },
     methods: {
+      formatDate(date) {
+        if (!date) return null
+        const [year, month, day] = date.split('-')
+        return `${day}/${month}/${year}`
+      },
       resetNewLoad() {
         this.newLoad = {
           code: '',

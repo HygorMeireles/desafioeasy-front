@@ -7,9 +7,9 @@
   </tr>
   <br />
   <div class="flex justify-between items-center mb-4">
+    <va-input v-model="newOrder.load_id" label="ID da carga" :placeholder="`${loadId}`" class="mr-2" disabled />
     <va-input v-model="newOrder.code" placeholder="Código" class="mr-2" />
     <va-input v-model="newOrder.bay" placeholder="Baia" class="mr-2" />
-    <va-input v-model="newOrder.load_id" label="ID da carga" :placeholder="`${loadId}`" class="mr-2" />
 
     <va-button style="--va-0-background-color: #f44336; color: #ffffff !important" @click="createOrder"
       >Adicionar</va-button
@@ -122,7 +122,7 @@
   >
     <div>
       <tr>
-        Você tem certeza de que deseja visualizar os produtos da lista
+        Visualizar os produtos da lista
         {{
           selectedOrderId
         }}
@@ -171,7 +171,7 @@
     setup() {
       const filter = ref('')
       const filterByFields = ref([])
-      const fieldsForFilter = ref(['id', 'code', 'bay'])
+      const fieldsForFilter = ref(['ID', 'Código', 'Baia'])
       return { filter, filterByFields, fieldsForFilter }
     },
     data() {
@@ -196,11 +196,18 @@
     computed: {
       filteredOrders() {
         return this.orders.filter((order) => {
+          const orderInfo = {
+            ...order,
+            ID: order ? order.id : '',
+            Código: order ? order.code : '',
+            Baia: order ? order.bay : '',
+          }
           const filterLowered = this.filter.toLowerCase()
           return (
             !this.filter ||
-            Object.keys(order).some(
-              (key) => this.filterByFields.includes(key) && String(order[key]).toLowerCase().includes(filterLowered),
+            Object.keys(orderInfo).some(
+              (key) =>
+                this.filterByFields.includes(key) && String(orderInfo[key]).toLowerCase().includes(filterLowered),
             )
           )
         })
@@ -253,6 +260,7 @@
         this.fetchOrders()
       },
       async createOrder() {
+        this.newOrder.load_id = this.loadId.toString()
         try {
           const orderData = { order: this.newOrder }
           await axios.post(`/admin/v1/loads/${this.loadId}/orders`, orderData, {})
@@ -264,6 +272,7 @@
             this.$store.commit('setSuccessMessage', '')
           }, 5000)
         } catch (error) {
+          console.log(this.newOrder)
           const errorMessage =
             error.response && error.response.data ? error.response.data.message : 'Erro ao criar a lista'
           this.$store.commit('setErrorMessage', errorMessage)

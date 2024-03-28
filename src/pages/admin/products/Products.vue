@@ -145,7 +145,7 @@
     setup() {
       const filter = ref('')
       const filterByFields = ref([])
-      const fieldsForFilter = ref(['id', 'name', 'ballast', 'product_type'])
+      const fieldsForFilter = ref(['ID', 'Nome', 'Lastro', 'Tipo'])
       return { filter, filterByFields, fieldsForFilter }
     },
     data() {
@@ -169,11 +169,19 @@
     computed: {
       filteredProducts() {
         return this.products.filter((product) => {
+          const productInfo = {
+            ...product,
+            ID: product ? product.id : '',
+            Nome: product ? product.name : '',
+            Lastro: product ? product.ballast : '',
+            Tipo: product ? product.product_type : '',
+          }
           const filterLowered = this.filter.toLowerCase()
           return (
             !this.filter ||
-            Object.keys(product).some(
-              (key) => this.filterByFields.includes(key) && String(product[key]).toLowerCase().includes(filterLowered),
+            Object.keys(productInfo).some(
+              (key) =>
+                this.filterByFields.includes(key) && String(productInfo[key]).toLowerCase().includes(filterLowered),
             )
           )
         })

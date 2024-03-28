@@ -125,7 +125,7 @@
     setup() {
       const filter = ref('')
       const filterByFields = ref([])
-      const fieldsForFilter = ref(['id', 'name', 'login'])
+      const fieldsForFilter = ref(['ID', 'Nome', 'Login'])
       return { filter, filterByFields, fieldsForFilter }
     },
     data() {
@@ -148,11 +148,17 @@
     computed: {
       filteredUsers() {
         return this.users.filter((user) => {
+          const userInfo = {
+            ...user,
+            ID: user ? user.id : '',
+            Nome: user ? user.name : '',
+            Login: user ? user.login : '',
+          }
           const filterLowered = this.filter.toLowerCase()
           return (
             !this.filter ||
-            Object.keys(user).some(
-              (key) => this.filterByFields.includes(key) && String(user[key]).toLowerCase().includes(filterLowered),
+            Object.keys(userInfo).some(
+              (key) => this.filterByFields.includes(key) && String(userInfo[key]).toLowerCase().includes(filterLowered),
             )
           )
         })
