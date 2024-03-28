@@ -6,6 +6,13 @@
   <div class="flex justify-between items-center mb-4">
     <va-input v-model="newProduct.name" placeholder="Nome" class="mr-2" />
     <va-input v-model="newProduct.ballast" placeholder="Lastro" class="mr-2" />
+    <va-select
+      v-model="newProduct.product_type"
+      style="color: #f44336"
+      label="Tipo de Embalagem"
+      class="mr-2"
+      :options="packagingOptions"
+    />
     <va-button style="--va-0-background-color: #f44336; color: #ffffff !important" @click="createProduct"
       >Adicionar</va-button
     >
@@ -35,6 +42,7 @@
             <th>{{ 'ID' }}</th>
             <th>{{ 'Nome' }}</th>
             <th>{{ 'Lastro' }}</th>
+            <th>{{ 'Tipo' }}</th>
             <th>{{ 'Ações' }}</th>
           </tr>
         </thead>
@@ -43,6 +51,13 @@
             <td>{{ product.id }}</td>
             <td>{{ product.name }}</td>
             <td>{{ product.ballast }}</td>
+            <td>
+              <VaPopover class="mr-2" :message="product.product_type">
+                <button class="image-button">
+                  <img :src="getImageForType(product.product_type)" alt="Tipo de embalagem" />
+                </button>
+              </VaPopover>
+            </td>
             <td>
               <va-button preset="plain" icon="edit" class="edit-button" @click="openModalToEditProduct(product)" />
               <va-button
@@ -73,6 +88,12 @@
     <div>
       <VaInput v-model="editedProduct.name" label="Nome" class="my-2 input-name" />
       <VaInput v-model="editedProduct.ballast" label="Lastro" class="my-2 input-lastro" />
+      <va-select
+        v-model="editedProduct.product_type"
+        label="Tipo de Embalagem"
+        class="mr-2"
+        :options="packagingOptions"
+      />
     </div>
   </VaModal>
 
@@ -124,7 +145,7 @@
     setup() {
       const filter = ref('')
       const filterByFields = ref([])
-      const fieldsForFilter = ref(['id', 'name', 'ballast'])
+      const fieldsForFilter = ref(['id', 'name', 'ballast', 'product_type'])
       return { filter, filterByFields, fieldsForFilter }
     },
     data() {
@@ -137,9 +158,11 @@
         editedProduct: null,
         deletedProduct: null,
         currentProductId: null,
+        packagingOptions: ['Plástico', 'Vidro', 'Lata'],
         newProduct: {
           name: '',
           ballast: '',
+          product_type: '',
         },
       }
     },
@@ -167,7 +190,7 @@
         return this.$store.state.errorMessage
       },
       isNewProductDataValid() {
-        return this.newProduct.name && this.newProduct.ballast
+        return this.newProduct.name && this.newProduct.ballast && this.newProduct.product_type
       },
     },
     watch: {
@@ -182,6 +205,18 @@
       this.fetchProducts()
     },
     methods: {
+      getImageForType(product_type) {
+        switch (product_type) {
+          case 'Plástico':
+            return '/plastico.png'
+          case 'Vidro':
+            return '/vidro.png'
+          case 'Lata':
+            return '/lata.png'
+          default:
+            return ''
+        }
+      },
       async fetchProducts() {
         try {
           const response = await axios.get('/admin/v1/products', {
@@ -219,7 +254,7 @@
         }
       },
       resetNewProduct() {
-        this.newProduct = { name: '', ballast: '' }
+        this.newProduct = { name: '', ballast: '', product_type: '' }
       },
       async deleteProduct(productId) {
         try {
@@ -246,9 +281,14 @@
           const productToUpdate = {
             name: this.editedProduct.name,
             ballast: this.editedProduct.ballast,
+            product_type: this.editedProduct.product_type,
           }
           const currentProduct = this.products.find((product) => product.id === productId)
-          if (currentProduct.name === productToUpdate.name && currentProduct.ballast === productToUpdate.ballast) {
+          if (
+            currentProduct.name === productToUpdate.name &&
+            currentProduct.ballast === productToUpdate.ballast &&
+            currentProduct.product_type === productToUpdate.product_type
+          ) {
             const errorMessage = 'Erro! Você precisa editar pelo menos um valor!'
             this.$store.commit('setErrorMessage', errorMessage)
             setTimeout(() => {
@@ -382,5 +422,17 @@
 
   .va-select-option--selected {
     color: #f44336 !important;
+  }
+
+  .image-button {
+    border: none;
+    background: none;
+    padding: 0;
+  }
+
+  .image-button img {
+    width: 40px;
+    height: auto;
+    cursor: pointer;
   }
 </style>

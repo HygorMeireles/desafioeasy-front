@@ -28,7 +28,7 @@
       </VaPopover>
 
       <va-input v-model="newOrderProduct.quantity" placeholder="Quantidade" class="mr-2" />
-      <div style="color: black">Caixa(s)?</div>
+      <div style="color: black">Caixa?</div>
 
       <VaSwitch v-model="newOrderProduct.box" style="color: #f44336" color="#f44336" class="mr-2" />
 
@@ -54,8 +54,9 @@
               <th>ID</th>
               <th>ID do produto</th>
               <th>Nome do produto</th>
+              <th>Tipo</th>
               <th>Quantidade</th>
-              <th>Caixa(s)</th>
+              <th>Caixa/Unidade</th>
               <th>Ações</th>
             </tr>
           </thead>
@@ -64,8 +65,22 @@
               <td>{{ order_product.id }}</td>
               <td>{{ order_product.product_id }}</td>
               <td>{{ getProductName(order_product.product_id) }}</td>
+              <td>
+                <VaPopover class="mr-2" :message="getProductProductType(order_product.product_id)">
+                  <button class="image-button">
+                    <img
+                      :src="getImageForType(getProductProductType(order_product.product_id))"
+                      alt="Tipo de embalagem"
+                    />
+                  </button>
+                </VaPopover>
+              </td>
               <td>{{ order_product.quantity }}</td>
-              <td>{{ order_product.box ? 'Sim' : 'Não' }}</td>
+              <td>
+                <VaPopover class="mr-2" :message="order_product.box ? 'Caixa' : 'Unidade'">
+                  <img :src="order_product.box ? '/caixa.png' : '/unidade.png'" alt="" class="imagem-caixa" />
+                </VaPopover>
+              </td>
               <td>
                 <va-button
                   preset="plain"
@@ -99,13 +114,11 @@
     >
       <div>
         <VaInput v-model="editedOrderProduct.quantity" label="Quantidade" class="mr-2 input-quantity" />
-        <VaSwitch
-          v-model="editedOrderProduct.box"
-          style="color: #f44336"
-          label="Caixa(s)?"
-          color="#f44336"
-          class="my-2 input-box"
-        />
+        <br />
+        <br />
+        <br />
+        <div class="mr-2" style="color: black">Caixa?</div>
+        <VaSwitch v-model="editedOrderProduct.box" style="color: #f44336" color="#f44336" class="my-2 input-box" />
       </div>
     </VaModal>
 
@@ -120,9 +133,7 @@
       @cancel="resetDeletedOrderProduct"
     >
       <div>
-        <div>
-          Você tem certeza de que deseja excluir o(s) produto(s) {{ deletedOrderProduct.id }} da lista {{ orderId }}?
-        </div>
+        <div>Você tem certeza de que deseja excluir o produto {{ deletedOrderProduct.id }} da lista {{ orderId }}?</div>
       </div>
     </VaModal>
 
@@ -140,6 +151,13 @@
       <div>
         <VaInput v-model="newProduct.name" label="Nome do Produto"></VaInput>
         <VaInput v-model="newProduct.ballast" label="Lastro"></VaInput>
+        <va-select
+          v-model="newProduct.product_type"
+          style="color: #f44336"
+          label="Tipo de Embalagem"
+          class="mr-2"
+          :options="packagingOptions"
+        />
       </div>
     </VaModal>
 
@@ -171,7 +189,7 @@
     setup() {
       const filter = ref('')
       const filterByFields = ref([])
-      const fieldsForFilter = ref(['id', 'product_id', 'product_name', 'quantity', 'box'])
+      const fieldsForFilter = ref(['IDLista', 'IDProduto', 'Nome', 'Tipo', 'Quantidade', 'Caixa'])
       return { filter, filterByFields, fieldsForFilter }
     },
     data() {
@@ -182,11 +200,13 @@
         newProduct: {
           name: '',
           ballast: '',
+          product_type: '',
         },
         editedOrderProduct: null,
         deletedOrderProduct: null,
         currentOrderProductId: null,
         selectedOrderProductId: null,
+        packagingOptions: ['Plástico', 'Vidro', 'Lata'],
         newOrderProduct: {
           order_id: '',
           product_id: null,
@@ -198,12 +218,23 @@
     computed: {
       filteredOrderProducts() {
         return this.order_products.filter((order_product) => {
+          const product = this.products.find((product) => product.id === order_product.product_id)
+          const productInfo = {
+            ...order_product,
+            IDLista: order_product ? order_product.id : '',
+            Quantidade: order_product ? order_product.quantity : '',
+            Caixa: order_product ? order_product.box : '',
+            IDProduto: product ? product.id : '',
+            Nome: product ? product.name : '',
+            Tipo: product ? product.product_type : '',
+          }
+
           const filterLowered = this.filter.toLowerCase()
           return (
             !this.filter ||
-            Object.keys(order_product).some(
+            Object.keys(productInfo).some(
               (key) =>
-                this.filterByFields.includes(key) && String(order_product[key]).toLowerCase().includes(filterLowered),
+                this.filterByFields.includes(key) && String(productInfo[key]).toLowerCase().includes(filterLowered),
             )
           )
         })
@@ -226,11 +257,23 @@
       this.fetchProducts()
     },
     methods: {
+      getImageForType(product_type) {
+        switch (product_type) {
+          case 'Plástico':
+            return '/plastico.png'
+          case 'Vidro':
+            return '/vidro.png'
+          case 'Lata':
+            return '/lata.png'
+          default:
+            return ''
+        }
+      },
       openModalToCreateNewProduct() {
         this.isNewProductModalOpen = true
       },
       resetNewProductForm() {
-        this.newProduct = { name: '', ballast: '' }
+        this.newProduct = { name: '', ballast: '', product_type: '' }
         this.isNewProductModalOpen = false
       },
       async submitNewProduct() {
@@ -239,6 +282,7 @@
           const successMessage = 'Produto criado com sucesso!'
           this.$store.commit('setSuccessMessage', successMessage)
           this.resetNewProductForm()
+          this.fetchProducts()
           setTimeout(() => {
             this.$store.commit('setSuccessMessage', '')
           }, 5000)
@@ -275,6 +319,7 @@
       async fetchOrderProducts() {
         try {
           const response = await axios.get(`/admin/v1/loads/${this.loadId}/orders/${this.orderId}/order_products`, {})
+          console.log(response.data)
           this.order_products = response.data
         } catch (error) {
           console.error('Erro ao buscar produtos da lista:', error)
@@ -397,6 +442,10 @@
         const product = this.products.find((product) => product.id === productId)
         return product ? product.name : 'Produto não encontrado'
       },
+      getProductProductType(productId) {
+        const product = this.products.find((product) => product.id === productId)
+        return product ? product.product_type : 'Produto não encontrado'
+      },
     },
   }
 </script>
@@ -508,5 +557,22 @@
 
   .va-select-option--selected {
     color: #f44336 !important;
+  }
+
+  .image-button {
+    border: none;
+    background: none;
+    padding: 0;
+  }
+
+  .image-button img {
+    width: 40px;
+    height: auto;
+    cursor: pointer;
+  }
+
+  .imagem-caixa {
+    width: 40px;
+    height: auto;
   }
 </style>
