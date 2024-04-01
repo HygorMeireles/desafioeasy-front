@@ -1,6 +1,11 @@
 <template>
+  <va-button color="#ffffff" @click="goBack">
+    <va-icon name="arrow_back" size="large" />
+  </va-button>
+  <br />
+  <br />
   <div>
-    <div style="color: black">Adicionar novos produtos para a lista {{ orderId }}:</div>
+    <div style="color: black">Adicionar novos produtos para a lista "{{ orderCode }}":</div>
     <br />
     <div class="flex justify-between items-center mb-4">
       <va-input
@@ -12,10 +17,10 @@
       />
 
       <va-select
-        v-model="newOrderProduct.product_id"
-        label="ID do produto"
+        v-model="selectedProduct"
+        label=""
         :options="productOptions"
-        :track-by="(product) => product.id"
+        :track-by="'id'"
         label-by="text"
         placeholder="Selecione o produto"
         style="color: #f44336"
@@ -54,9 +59,8 @@
               <th>ID</th>
               <th>ID do produto</th>
               <th>Nome do produto</th>
-              <th>Tipo</th>
               <th>Quantidade</th>
-              <th>Caixa/Unidade</th>
+              <th>Caixa?</th>
               <th>Ações</th>
             </tr>
           </thead>
@@ -65,22 +69,8 @@
               <td>{{ order_product.id }}</td>
               <td>{{ order_product.product_id }}</td>
               <td>{{ getProductName(order_product.product_id) }}</td>
-              <td>
-                <VaPopover class="mr-2" :message="getProductProductType(order_product.product_id)">
-                  <button class="image-button">
-                    <img
-                      :src="getImageForType(getProductProductType(order_product.product_id))"
-                      alt="Tipo de embalagem"
-                    />
-                  </button>
-                </VaPopover>
-              </td>
               <td>{{ order_product.quantity }}</td>
-              <td>
-                <VaPopover class="mr-2" :message="order_product.box ? 'Caixa' : 'Unidade'">
-                  <img :src="order_product.box ? '/caixa.png' : '/unidade.png'" alt="" class="imagem-caixa" />
-                </VaPopover>
-              </td>
+              <td>{{ order_product.box ? 'Sim' : 'Não' }}</td>
               <td>
                 <va-button
                   preset="plain"
@@ -105,7 +95,9 @@
       style="--va-input-wrapper-border-color: #f44336 !important"
       class="modal-crud"
       :model-value="editedOrderProduct !== null"
-      :title="editedOrderProduct ? `Editar produto ${editedOrderProduct.id} da lista ${orderId}` : `Carregando...`"
+      :title="
+        editedOrderProduct ? `Editar produto ${editedOrderProduct.product_id} da lista ${orderCode}` : `Carregando...`
+      "
       size="small"
       ok-text="Confirmar"
       cancel-text="Cancelar"
@@ -133,7 +125,10 @@
       @cancel="resetDeletedOrderProduct"
     >
       <div>
-        <div>Você tem certeza de que deseja excluir o produto {{ deletedOrderProduct.id }} da lista {{ orderId }}?</div>
+        <div>
+          Você tem certeza de que deseja excluir o produto {{ deletedOrderProduct.product_id }} da lista
+          {{ orderCode }}?
+        </div>
       </div>
     </VaModal>
 
@@ -182,14 +177,14 @@
     },
     props: {
       orderId: {
-        type: Number,
+        type: String,
         required: true,
       },
     },
     setup() {
       const filter = ref('')
       const filterByFields = ref([])
-      const fieldsForFilter = ref(['IDLista', 'IDProduto', 'Nome', 'Tipo', 'Quantidade', 'Caixa'])
+      const fieldsForFilter = ref(['IDLista', 'IDProduto', 'Nome', 'Quantidade', 'Caixa'])
       return { filter, filterByFields, fieldsForFilter }
     },
     data() {
@@ -203,13 +198,16 @@
           product_type: '',
         },
         editedOrderProduct: null,
+        selectedProduct: null,
         deletedOrderProduct: null,
         currentOrderProductId: null,
         selectedOrderProductId: null,
         packagingOptions: ['Plástico', 'Vidro', 'Lata'],
+        orderCode: this.$route.query.orderCode,
         newOrderProduct: {
           order_id: '',
           product_id: null,
+          productName: '',
           quantity: '',
           box: false,
         },
@@ -226,7 +224,6 @@
             Caixa: order_product ? order_product.box : '',
             IDProduto: product ? product.id : '',
             Nome: product ? product.name : '',
-            Tipo: product ? product.product_type : '',
           }
           const filterLowered = this.filter.toLowerCase()
           return (
@@ -256,17 +253,8 @@
       this.fetchProducts()
     },
     methods: {
-      getImageForType(product_type) {
-        switch (product_type) {
-          case 'Plástico':
-            return '/plastico.png'
-          case 'Vidro':
-            return '/vidro.png'
-          case 'Lata':
-            return '/lata.png'
-          default:
-            return ''
-        }
+      goBack() {
+        this.$router.go(-1)
       },
       openModalToCreateNewProduct() {
         this.isNewProductModalOpen = true
@@ -298,11 +286,13 @@
         this.newOrderProduct = {
           order_id: '',
           product_id: null,
+          productName: '',
           quantity: '',
           box: false,
         }
       },
       updateSelectedOption(product) {
+        this.newOrderProduct.productName = product.name
         this.newOrderProduct.product_id = product.id
       },
       async fetchProducts(length = 100) {
@@ -318,7 +308,6 @@
       async fetchOrderProducts() {
         try {
           const response = await axios.get(`/admin/v1/loads/${this.loadId}/orders/${this.orderId}/order_products`, {})
-          console.log(response.data)
           this.order_products = response.data
         } catch (error) {
           console.error('Erro ao buscar produtos da lista:', error)

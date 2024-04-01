@@ -64,7 +64,7 @@
     style="--va-input-wrapper-border-color: #f44336 !important"
     class="modal-crud"
     :model-value="editedUser !== null"
-    :title="editedUser ? `Editar usuário ${editedUser.id}` : `Carregando...`"
+    :title="editedUser ? `Editar usuário ${editedUser.id} (${editedUser.name})` : `Carregando...`"
     size="small"
     ok-text="Confirmar"
     cancel-text="Cancelar"
@@ -92,7 +92,10 @@
         Você tem certeza de que deseja excluir o usuário
         {{
           deletedUser.id
-        }}?
+        }}
+        ({{
+          deletedUser.name
+        }})?
       </tr>
     </div>
   </VaModal>

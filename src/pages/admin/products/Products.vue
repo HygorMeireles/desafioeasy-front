@@ -78,7 +78,7 @@
     style="--va-input-wrapper-border-color: #f44336 !important"
     class="modal-crud"
     :model-value="editedProduct !== null"
-    :title="editedProduct ? `Editar produto ${editedProduct.id}` : `Carregando...`"
+    :title="editedProduct ? `Editar produto ${editedProduct.id} (${editedProduct.name})` : `Carregando...`"
     size="small"
     ok-text="Confirmar"
     cancel-text="Cancelar"
@@ -111,7 +111,7 @@
       <tr>
         Você tem certeza de que deseja excluir o produto
         {{
-          deletedProduct.id
+          deletedProduct.name
         }}?
       </tr>
     </div>

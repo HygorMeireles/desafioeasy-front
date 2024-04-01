@@ -1,9 +1,13 @@
 <template>
+  <va-button color="#ffffff" @click="goBack">
+    <va-icon name="arrow_back" size="large" />
+  </va-button>
+  <br />
+  <br />
   <tr style="color: black">
-    Adicionar nova lista para a carga
-    {{
-      loadId
-    }}:
+    Adicionar nova lista para a carga "{{
+      loadCode
+    }}":
   </tr>
   <br />
   <div class="flex justify-between items-center mb-4">
@@ -61,7 +65,12 @@
             </td>
 
             <td>
-              <va-button preset="plain" icon="eye" class="delete-button ml-3" @click="openConfirmation(order.id)" />
+              <va-button
+                preset="plain"
+                icon="eye"
+                class="delete-button ml-3"
+                @click="confirmAction(order.id, order.code)"
+              />
             </td>
           </tr>
         </tbody>
@@ -73,7 +82,7 @@
     style="--va-input-wrapper-border-color: #f44336 !important"
     class="modal-crud"
     :model-value="editedOrder !== null"
-    :title="editedOrder ? `Editar lista ${editedOrder.id} da carga ${loadId}` : `Carregando...`"
+    :title="editedOrder ? `Editar lista ${editedOrder.code} da carga ${loadCode}` : `Carregando...`"
     size="small"
     ok-text="Confirmar"
     cancel-text="Cancelar"
@@ -100,35 +109,11 @@
       <tr>
         Você tem certeza de que deseja excluir a lista
         {{
-          selectedOrderId
+          deletedOrder.code
         }}
         da carga
         {{
-          loadId
-        }}?
-      </tr>
-    </div>
-  </VaModal>
-
-  <VaModal
-    style="--va-input-wrapper-border-color: #f44336 !important"
-    class="modal-crud"
-    :model-value="showModal"
-    size="small"
-    ok-text="Sim"
-    cancel-text="Não"
-    @ok="confirmAction"
-    @cancel="cancelAction"
-  >
-    <div>
-      <tr>
-        Visualizar os produtos da lista
-        {{
-          selectedOrderId
-        }}
-        da carga
-        {{
-          loadId
+          loadCode
         }}?
       </tr>
     </div>
@@ -164,7 +149,7 @@
     },
     props: {
       loadId: {
-        type: Number,
+        type: String,
         required: true,
       },
     },
@@ -186,6 +171,7 @@
         currentOrderId: null,
         showModal: false,
         selectedOrderId: null,
+        loadCode: this.$route.query.loadCode,
         newOrder: {
           code: '',
           bay: '',
@@ -236,6 +222,9 @@
       this.fetchOrders()
     },
     methods: {
+      goBack() {
+        this.$router.go(-1)
+      },
       resetNewOrder() {
         this.newOrder = {
           code: '',
@@ -343,19 +332,10 @@
           }, 5000)
         }
       },
-      openConfirmation(orderId) {
-        this.selectedOrderId = orderId
-        this.showModal = true
-      },
-      confirmAction() {
-        this.showModal = false
-        this.$router.push({ name: 'OrderProducts', params: { orderId: this.selectedOrderId } }).catch((err) => {
+      confirmAction(orderId, orderCode) {
+        this.$router.push({ name: 'OrderProducts', params: { orderId }, query: { orderCode } }).catch((err) => {
           console.error(err)
         })
-      },
-      cancelAction() {
-        this.showModal = false
-        this.selectedOrderId = null
       },
       openModalToEditOrder(order) {
         this.editedOrder = {

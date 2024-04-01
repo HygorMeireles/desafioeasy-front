@@ -57,7 +57,12 @@
             </td>
 
             <td>
-              <va-button preset="plain" icon="eye" class="delete-button ml-3" @click="openConfirmation(load.id)" />
+              <va-button
+                preset="plain"
+                icon="eye"
+                class="delete-button ml-3"
+                @click="confirmAction(load.id, load.code)"
+              />
             </td>
           </tr>
         </tbody>
@@ -69,7 +74,7 @@
     style="--va-input-wrapper-border-color: #f44336 !important"
     class="modal-crud"
     :model-value="editedLoad !== null"
-    :title="editedLoad ? `Editar carga ${editedLoad.id}` : `Carregando...`"
+    :title="editedLoad ? `Editar carga ${editedLoad.id} (${editedLoad.code})` : `Carregando...`"
     size="small"
     ok-text="Confirmar"
     cancel-text="Cancelar"
@@ -96,27 +101,7 @@
       <tr>
         Você tem certeza de que deseja excluir a carga
         {{
-          selectedLoadId
-        }}?
-      </tr>
-    </div>
-  </VaModal>
-
-  <VaModal
-    style="--va-input-wrapper-border-color: #f44336 !important"
-    class="modal-crud"
-    :model-value="showModal"
-    size="small"
-    ok-text="Sim"
-    cancel-text="Não"
-    @ok="confirmAction"
-    @cancel="cancelAction"
-  >
-    <div>
-      <tr>
-        Visualizar as listas da carga
-        {{
-          selectedLoadId
+          deletedLoad.code
         }}?
       </tr>
     </div>
@@ -333,20 +318,10 @@
           }, 5000)
         }
       },
-      openConfirmation(loadId) {
-        this.selectedLoadId = loadId
-        this.showModal = true
-      },
-      confirmAction() {
-        this.showModal = false
-
-        this.$router.push({ name: 'LoadOrders', params: { loadId: this.selectedLoadId } }).catch((err) => {
+      confirmAction(loadId, loadCode) {
+        this.$router.push({ name: 'LoadOrders', params: { loadId }, query: { loadCode } }).catch((err) => {
           console.error(err)
         })
-      },
-      cancelAction() {
-        this.showModal = false
-        this.selectedLoadId = null
       },
       openModalToEditLoad(load) {
         const [year, month, day] = load.delivery_date.split('-')
