@@ -238,7 +238,7 @@
       productOptions() {
         return this.products.map((product) => ({
           id: product.id,
-          text: product.name,
+          text: `${product.name}, lastro: ${product.ballast}`,
         }))
       },
       successMessage() {

@@ -46,7 +46,8 @@
             <th>{{ 'Código' }}</th>
             <th>{{ 'Baia' }}</th>
             <th>{{ 'Ações' }}</th>
-            <th>{{ 'Visualizar produtos da lista' }}</th>
+            <th>{{ 'Visualizar produtos' }}</th>
+            <th>{{ 'Visualizar produtos ordenados' }}</th>
           </tr>
         </thead>
         <tbody>
@@ -63,13 +64,20 @@
                 @click="openModalToDeleteOrder(order.id)"
               />
             </td>
-
             <td>
               <va-button
                 preset="plain"
                 icon="eye"
                 class="delete-button ml-3"
                 @click="confirmAction(order.id, order.code)"
+              />
+            </td>
+            <td>
+              <va-button
+                preset="plain"
+                icon="loop"
+                class="delete-button ml-3"
+                @click="confirmActionSorted(order.id, order.code)"
               />
             </td>
           </tr>
@@ -334,6 +342,11 @@
       },
       confirmAction(orderId, orderCode) {
         this.$router.push({ name: 'OrderProducts', params: { orderId }, query: { orderCode } }).catch((err) => {
+          console.error(err)
+        })
+      },
+      confirmActionSorted(orderId, orderCode) {
+        this.$router.push({ name: 'SortedOrderProducts', params: { orderId }, query: { orderCode } }).catch((err) => {
           console.error(err)
         })
       },
