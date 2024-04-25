@@ -20,11 +20,11 @@
         </thead>
         <tbody>
           <tr v-for="sorted_order_product in sorted_order_products" :key="sorted_order_product.id">
-            <td>{{ sorted_order_product.name }}</td>
+            <td>{{ sorted_order_product.product.name }}</td>
             <td>{{ sorted_order_product.layer }}</td>
             <td>{{ sorted_order_product.quantity }}</td>
             <td>{{ sorted_order_product.box ? 'Sim' : 'Não' }}</td>
-            <td>{{ sorted_order_product.ballast }}</td>
+            <td>{{ sorted_order_product.product.ballast }}</td>
           </tr>
         </tbody>
       </table>
@@ -83,11 +83,10 @@
       async fetchSortedOrderProducts() {
         try {
           const response = await axios.get(
-            `/admin/v1/loads/${this.loadId}/orders/${this.orderId}/sorted_order_products`,
-            {},
+            `/admin/v1/loads/${this.loadId}/orders/${this.orderId}/sorted_order_products/show_sorted_products`,
           )
+          console.log('Dados recebidos:', response.data)
           this.sorted_order_products = response.data
-          console.log(response)
         } catch (error) {
           console.error('Erro ao buscar produtos da lista:', error)
         }

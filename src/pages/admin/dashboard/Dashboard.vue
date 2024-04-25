@@ -6,16 +6,11 @@
       </div>
     </div>
   </div>
-  <VaCarousel :items="items" stateful autoscroll infinite :autoscroll-interval="5000">
-    <template #default="{ item }">
-      <img :src="item.src" alt="" />
-    </template>
-  </VaCarousel>
   <div class="dashboard">
     <div class="charts-container">
       <div v-for="chart in charts" :key="chart.title" class="chart-box">
         <div style="color: black" class="chart-title">{{ chart.title }}</div>
-        <div class="chart-bar" :style="{ width: chart.value + '%', backgroundColor: chart.color }"></div>
+        <div class="chart-bar" :style="{ width: chart.value + '%' || '0%', backgroundColor: chart.color }"></div>
         <div style="color: black" class="chart-value">{{ chart.value }}</div>
       </div>
     </div>
@@ -33,21 +28,32 @@
   import { ref, onMounted } from 'vue'
   import MiniEasyLogo from '@/components/MiniEasyLogo.vue'
   import Icones from '@/components/Icones.vue'
-  import axios from 'axios'
+  import axios from '@/axios'
+  import { useStore } from 'vuex'
+  import moment from 'moment-timezone'
+  import { useRouter } from 'vue-router'
 
-  const items = ref([
-    { src: '/pag1.png' },
-    { src: '/pag2.png' },
-    { src: '/pag3.png' },
-    { src: '/pag4.png' },
-    { src: '/pag5.png' },
-    { src: '/pag6.png' },
-  ])
   const charts = ref([
-    { title: 'Usuários cadastrados:', value: 83, color: '#EF5350' },
-    { title: 'Produtos cadastrados:', value: 67, color: '#EF5350' },
-    { title: 'Cargas cadastradas:', value: 39, color: '#EF5350' },
+    { title: 'Usuários cadastrados:', value: 0, color: '#EF5350' },
+    { title: 'Produtos cadastrados:', value: 0, color: '#EF5350' },
+    { title: 'Cargas cadastradas:', value: 0, color: '#EF5350' },
   ])
+
+  onMounted(async () => {
+    try {
+      const responses = await Promise.all([
+        axios.get(`/admin/v1/users/count`),
+        axios.get(`/admin/v1/products/count`),
+        axios.get(`/admin/v1/loads/count`),
+      ])
+
+      charts.value[0].value = responses[0].data.count
+      charts.value[1].value = responses[1].data.count
+      charts.value[2].value = responses[2].data.count
+    } catch (error) {
+      console.error('Error fetching counts:', error)
+    }
+  })
 </script>
 
 <style scoped>

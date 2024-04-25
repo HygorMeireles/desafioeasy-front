@@ -377,18 +377,6 @@
             }, 5000)
             return
           }
-          const isDuplicate = this.order_products.some(
-            (order_product) =>
-              order_product.id !== order_productId && order_product.product_id === order_productToUpdate.product_id,
-          )
-          if (isDuplicate) {
-            const errorMessage = 'Erro: Esse produto já existe na lista atual!'
-            this.$store.commit('setErrorMessage', errorMessage)
-            setTimeout(() => {
-              this.$store.commit('setErrorMessage', '')
-            }, 5000)
-            return
-          }
           await axios.put(
             `/admin/v1/loads/${this.loadId}/orders/${this.orderId}/order_products/${order_productId}`,
             order_productToUpdate,

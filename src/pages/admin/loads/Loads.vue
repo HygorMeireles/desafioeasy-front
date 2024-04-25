@@ -31,6 +31,13 @@
         class="mt-4 md:mt-0 md:w-1/2"
       />
       <va-input v-model="filter" placeholder="Filtrar..." class="mr-2 w-full md:w-1/5" />
+      <VaPopover class="mr-2" message="Ordenar todos os produtos">
+        <va-button
+          style="--va-0-background-color: #ffffff; color: #ffffff !important"
+          icon="loop"
+          @click="sortAllSortedOrderProducts"
+        ></va-button>
+      </VaPopover>
       <table class="va-table va-table--striped va-table--hoverable w-full">
         <thead>
           <tr>
@@ -213,6 +220,24 @@
         this.newLoad = {
           code: '',
           delivery_date: null,
+        }
+      },
+      async sortAllSortedOrderProducts() {
+        try {
+          const response = await axios.post('/admin/v1/sorted_order_products/sort_all', {})
+          const successMessage = 'Produtos ordenados com sucesso!'
+          this.$store.commit('setSuccessMessage', successMessage)
+          setTimeout(() => {
+            this.$store.commit('setSuccessMessage', '')
+          }, 5000)
+        } catch (error) {
+          const errorMessage =
+            error.response && error.response.data ? error.response.data.message : 'Erro ao ordenar os produtos'
+          this.$store.commit('setErrorMessage', errorMessage)
+
+          setTimeout(() => {
+            this.$store.commit('setErrorMessage', '')
+          }, 5000)
         }
       },
       async fetchLoads() {
