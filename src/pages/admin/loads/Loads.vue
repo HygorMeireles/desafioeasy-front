@@ -38,6 +38,12 @@
           @click="sortAllSortedOrderProducts"
         ></va-button>
       </VaPopover>
+      <div v-if="isLoading" class="loading-overlay">
+        <div class="loading-container">
+          <VaInnerLoading loading :size="60" />
+          <span class="loading-text">Ordenando produtos...</span>
+        </div>
+      </div>
       <table class="va-table va-table--striped va-table--hoverable w-full">
         <thead>
           <tr>
@@ -160,6 +166,7 @@
         currentLoadId: null,
         showModal: false,
         selectedLoadId: null,
+        isLoading: false,
         newLoad: {
           code: '',
           delivery_date: null,
@@ -223,6 +230,7 @@
         }
       },
       async sortAllSortedOrderProducts() {
+        this.isLoading = true
         try {
           const response = await axios.post('/admin/v1/sorted_order_products/sort_all', {})
           const successMessage = 'Produtos ordenados com sucesso!'
@@ -238,6 +246,8 @@
           setTimeout(() => {
             this.$store.commit('setErrorMessage', '')
           }, 5000)
+        } finally {
+          this.isLoading = false
         }
       },
       async fetchLoads() {
@@ -370,6 +380,31 @@
 </script>
 
 <style>
+  .loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+  }
+
+  .loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .loading-text {
+    margin-top: 20px;
+    color: white;
+    font-size: 16px;
+  }
+
   .pagination-button,
   .pagination-number {
     min-width: 35px;

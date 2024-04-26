@@ -10,7 +10,6 @@
     <div class="charts-container">
       <div v-for="chart in charts" :key="chart.title" class="chart-box">
         <div style="color: black" class="chart-title">{{ chart.title }}</div>
-        <div class="chart-bar" :style="{ width: chart.value + '%' || '0%', backgroundColor: chart.color }"></div>
         <div style="color: black" class="chart-value">{{ chart.value }}</div>
       </div>
     </div>

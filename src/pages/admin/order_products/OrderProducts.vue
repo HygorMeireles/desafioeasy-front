@@ -146,13 +146,6 @@
       <div>
         <VaInput v-model="newProduct.name" label="Nome do Produto"></VaInput>
         <VaInput v-model="newProduct.ballast" label="Lastro"></VaInput>
-        <va-select
-          v-model="newProduct.product_type"
-          style="color: #f44336"
-          label="Tipo de Embalagem"
-          class="mr-2"
-          :options="packagingOptions"
-        />
       </div>
     </VaModal>
 
@@ -195,14 +188,12 @@
         newProduct: {
           name: '',
           ballast: '',
-          product_type: '',
         },
         editedOrderProduct: null,
         selectedProduct: null,
         deletedOrderProduct: null,
         currentOrderProductId: null,
         selectedOrderProductId: null,
-        packagingOptions: ['Plástico', 'Vidro', 'Lata'],
         orderCode: this.$route.query.orderCode,
         newOrderProduct: {
           order_id: '',
@@ -260,7 +251,7 @@
         this.isNewProductModalOpen = true
       },
       resetNewProductForm() {
-        this.newProduct = { name: '', ballast: '', product_type: '' }
+        this.newProduct = { name: '', ballast: '' }
         this.isNewProductModalOpen = false
       },
       async submitNewProduct() {
@@ -295,7 +286,7 @@
         this.newOrderProduct.productName = product.name
         this.newOrderProduct.product_id = product.id
       },
-      async fetchProducts(length = 100) {
+      async fetchProducts(length = 950) {
         try {
           const response = await axios.get('/admin/v1/products', {
             params: { length: length },
@@ -417,10 +408,6 @@
       getProductName(productId) {
         const product = this.products.find((product) => product.id === productId)
         return product ? product.name : 'Produto não encontrado'
-      },
-      getProductProductType(productId) {
-        const product = this.products.find((product) => product.id === productId)
-        return product ? product.product_type : 'Produto não encontrado'
       },
     },
   }
