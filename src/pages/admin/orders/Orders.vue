@@ -48,6 +48,7 @@
             <th>{{ 'Ações' }}</th>
             <th>{{ 'Visualizar produtos' }}</th>
             <th>{{ 'Visualizar produtos ordenados' }}</th>
+            <th>{{ 'Ordenar' }}</th>
           </tr>
         </thead>
         <tbody>
@@ -75,9 +76,17 @@
             <td>
               <va-button
                 preset="plain"
-                icon="loop"
+                icon="eye"
                 class="delete-button ml-3"
                 @click="confirmActionSorted(order.id, order.code)"
+              />
+            </td>
+            <td>
+              <va-button
+                preset="plain"
+                icon="loop"
+                class="delete-button ml-3"
+                @click="confirmActionReSorted(order.id)"
               />
             </td>
           </tr>
@@ -228,6 +237,7 @@
     },
     mounted() {
       this.fetchOrders()
+      this.fetchOrderProducts()
     },
     methods: {
       goBack() {
@@ -238,6 +248,14 @@
           code: '',
           bay: '',
           load_id: '',
+        }
+      },
+      async fetchOrderProducts() {
+        try {
+          const response = await axios.get(`/admin/v1/loads/${this.loadId}/orders/${this.orderId}/order_products`, {})
+          this.order_products = response.data
+        } catch (error) {
+          console.error('Erro ao buscar produtos da lista:', error)
         }
       },
       async fetchOrders() {
@@ -333,6 +351,25 @@
           }, 5000)
         } catch (error) {
           const errorMessage = 'Erro ao editar a lista!'
+          this.$store.commit('setErrorMessage', errorMessage)
+
+          setTimeout(() => {
+            this.$store.commit('setErrorMessage', '')
+          }, 5000)
+        }
+      },
+      async confirmActionReSorted(orderId) {
+        try {
+          const response = await axios.get(`/admin/v1/loads/${this.loadId}/orders/${orderId}/sorted_order_products`, {})
+          this.sorted_order_products = response.data
+          const successMessage = 'Produtos ordenados com sucesso!'
+          this.$store.commit('setSuccessMessage', successMessage)
+          setTimeout(() => {
+            this.$store.commit('setSuccessMessage', '')
+          }, 5000)
+        } catch (error) {
+          const errorMessage =
+            error.response && error.response.data ? error.response.data.message : 'Erro ao ordenar os produtos'
           this.$store.commit('setErrorMessage', errorMessage)
 
           setTimeout(() => {
