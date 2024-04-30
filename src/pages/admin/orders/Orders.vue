@@ -28,7 +28,7 @@
         label="Listas por página"
         style="color: #f44336"
         placeholder="Número de listas por página"
-        class="mr-2 mt-4 md:mt-0 md:w-1/4"
+        class="mr-2 mt-4 md:mt-0 md:w-1/3"
       />
       <va-select
         v-model="filterByFields"
@@ -36,9 +36,14 @@
         placeholder="Selecione campos para filtrar"
         :options="fieldsForFilter"
         multiple
-        class="mt-4 md:mt-0 md:w-1/2"
+        class="mr-2 md:mt-0 md:w-1/4"
       />
-      <va-input v-model="filter" placeholder="Filtrar..." class="mr-2 w-full md:w-1/5" />
+      <va-input v-model="filter" placeholder="Filtrar..." class="mr-2 w-full md:w-1/4" />
+      <va-button
+        style="--va-0-background-color: #f44336; color: #ffffff !important"
+        @click="sortAllSortedOrderProducts(loadId)"
+        >Ordenar todos os produtos</va-button
+      >
       <table class="va-table va-table--striped va-table--hoverable w-full">
         <thead>
           <tr>
@@ -274,6 +279,25 @@
         this.currentPage = newPage
         this.fetchOrders()
       },
+      async sortAllSortedOrderProducts(loadId) {
+        this.isLoading = true
+        try {
+          const response = await axios.post('/admin/v1/sorted_order_products/sort_all_products', { load_id: loadId })
+          this.$store.commit('setSuccessMessage', 'Produtos ordenados com sucesso!')
+          setTimeout(() => {
+            this.$store.commit('setSuccessMessage', '')
+          }, 5000)
+        } catch (error) {
+          const errorMessage =
+            error.response && error.response.data ? error.response.data.message : 'Erro ao ordenar os produtos'
+          this.$store.commit('setErrorMessage', errorMessage)
+          setTimeout(() => {
+            this.$store.commit('setErrorMessage', '')
+          }, 5000)
+        } finally {
+          this.isLoading = false
+        }
+      },
       async createOrder() {
         this.newOrder.load_id = this.loadId.toString()
         try {
@@ -407,6 +431,31 @@
 </script>
 
 <style>
+  .loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+  }
+
+  .loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .loading-text {
+    margin-top: 20px;
+    color: white;
+    font-size: 16px;
+  }
+
   .pagination-button,
   .pagination-number {
     min-width: 35px;

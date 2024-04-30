@@ -50,7 +50,7 @@
           placeholder="Selecione campos para filtrar"
           :options="fieldsForFilter"
           multiple
-          class="mt-4 md:mt-0 md:w-1/2"
+          class="mr-2 md:mt-0 md:w-1/2"
         />
         <va-input v-model="filter" placeholder="Filtrar..." class="mr-2 w-full md:w-1/5" />
         <table class="va-table va-table--striped va-table--hoverable w-full">
