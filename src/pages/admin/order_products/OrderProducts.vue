@@ -59,6 +59,7 @@
               <th>ID</th>
               <th>ID do produto</th>
               <th>Nome do produto</th>
+              <th>Lastro</th>
               <th>Quantidade</th>
               <th>Caixa?</th>
               <th>Ações</th>
@@ -69,6 +70,7 @@
               <td>{{ order_product.id }}</td>
               <td>{{ order_product.product_id }}</td>
               <td>{{ getProductName(order_product.product_id) }}</td>
+              <td>{{ getProductBallast(order_product.product_id) }}</td>
               <td>{{ order_product.quantity }}</td>
               <td>{{ order_product.box ? 'Sim' : 'Não' }}</td>
               <td>
@@ -408,6 +410,10 @@
       getProductName(productId) {
         const product = this.products.find((product) => product.id === productId)
         return product ? product.name : 'Produto não encontrado'
+      },
+      getProductBallast(productId) {
+        const product = this.products.find((product) => product.id === productId)
+        return product ? product.ballast : 'Lastro não encontrado'
       },
     },
   }

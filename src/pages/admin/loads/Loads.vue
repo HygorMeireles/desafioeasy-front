@@ -31,6 +31,16 @@
         class="mr-2 md:mt-0 md:w-1/2"
       />
       <va-input v-model="filter" placeholder="Filtrar..." class="mr-2 w-full md:w-1/5" />
+      <div class="flex items-center mt-2">
+        <VaSwitch v-model="isButtonActive" style="color: #f44336" color="#f44336" class="mr-2" />
+        <va-button
+          style="--va-0-background-color: #f44336; color: #ffffff !important"
+          :disabled="!isButtonActive"
+          @click="sortAllSortedOrderProducts"
+        >
+          Ordenar todos os produtos
+        </va-button>
+      </div>
       <div v-if="isLoading" class="loading-overlay">
         <div class="loading-container">
           <VaInnerLoading loading :size="60" />
@@ -154,6 +164,7 @@
         totalPages: 0,
         loadsPerPage: 10,
         perPage: 10,
+        isButtonActive: false,
         editedLoad: null,
         deletedLoad: null,
         currentLoadId: null,
@@ -220,6 +231,27 @@
         this.newLoad = {
           code: '',
           delivery_date: null,
+        }
+      },
+      async sortAllSortedOrderProducts() {
+        this.isLoading = true
+        try {
+          const response = await axios.post('/admin/v1/sorted_order_products/sort_all', {})
+          const successMessage = 'Produtos ordenados com sucesso!'
+          this.$store.commit('setSuccessMessage', successMessage)
+          setTimeout(() => {
+            this.$store.commit('setSuccessMessage', '')
+          }, 5000)
+        } catch (error) {
+          const errorMessage =
+            error.response && error.response.data ? error.response.data.message : 'Erro ao ordenar os produtos'
+          this.$store.commit('setErrorMessage', errorMessage)
+
+          setTimeout(() => {
+            this.$store.commit('setErrorMessage', '')
+          }, 5000)
+        } finally {
+          this.isLoading = false
         }
       },
       async fetchLoads() {
@@ -352,6 +384,31 @@
 </script>
 
 <style>
+  .loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+  }
+
+  .loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .loading-text {
+    margin-top: 20px;
+    color: white;
+    font-size: 16px;
+  }
+
   .pagination-button,
   .pagination-number {
     min-width: 35px;
