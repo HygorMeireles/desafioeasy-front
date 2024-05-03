@@ -19,6 +19,9 @@
           </tr>
         </thead>
         <tbody>
+          <tr v-if="sorted_order_products.length === 0" class="empty-message">
+            <td colspan="7" class="text-center">Você precisa ordenar os produtos para visualizar.</td>
+          </tr>
           <tr v-for="sorted_order_product in sorted_order_products" :key="sorted_order_product.id">
             <td>{{ sorted_order_product.product.name }}</td>
             <td>{{ sorted_order_product.layer }}</td>
@@ -219,5 +222,13 @@
   .imagem-caixa {
     width: 40px;
     height: auto;
+  }
+  .empty-message {
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    height: 60vh;
+    font-size: 24px;
+    color: #333;
   }
 </style>

@@ -20,7 +20,7 @@
         label="Cargas por página"
         style="color: #f44336"
         placeholder="Número de cargas por página"
-        class="mr-2 mt-4 md:mt-0 md:w-1/4"
+        class="mr-2 mt-4 md:mt-0 md:w-1/3"
       />
       <va-select
         v-model="filterByFields"
@@ -28,19 +28,12 @@
         placeholder="Selecione campos para filtrar"
         :options="fieldsForFilter"
         multiple
-        class="mr-2 md:mt-0 md:w-1/2"
+        class="mr-2 md:mt-0 md:w-1/4"
       />
-      <va-input v-model="filter" placeholder="Filtrar..." class="mr-2 w-full md:w-1/5" />
-      <div class="flex items-center mt-2">
-        <VaSwitch v-model="isButtonActive" style="color: #f44336" color="#f44336" class="mr-2" />
-        <va-button
-          style="--va-0-background-color: #f44336; color: #ffffff !important"
-          :disabled="!isButtonActive"
-          @click="sortAllSortedOrderProducts"
-        >
-          Ordenar todos os produtos
-        </va-button>
-      </div>
+      <va-input v-model="filter" placeholder="Filtrar..." class="mr-2 w-full md:w-1/4" />
+      <va-button style="--va-0-background-color: #f44336; color: #ffffff !important" @click="showModal = true">
+        Ordenar todos os produtos
+      </va-button>
       <div v-if="isLoading" class="loading-overlay">
         <div class="loading-container">
           <VaInnerLoading loading :size="60" />
@@ -54,7 +47,7 @@
             <th>{{ 'Código' }}</th>
             <th>{{ 'Data de entrega' }}</th>
             <th>{{ 'Ações' }}</th>
-            <th>{{ 'Visualizar listas das cargas' }}</th>
+            <th style="text-align: center; vertical-align: middle">{{ 'Visualizar listas das cargas' }}</th>
           </tr>
         </thead>
         <tbody>
@@ -72,11 +65,12 @@
               />
             </td>
 
-            <td>
+            <td style="text-align: center; vertical-align: middle">
               <va-button
                 preset="plain"
                 icon="eye"
                 class="delete-button ml-3"
+                style="margin-left: -8px"
                 @click="confirmAction(load.id, load.code)"
               />
             </td>
@@ -120,6 +114,24 @@
           deletedLoad.code
         }}?
       </tr>
+    </div>
+  </VaModal>
+
+  <VaModal
+    v-model="showModal"
+    style="--va-input-wrapper-border-color: #f44336 !important"
+    class="modal-crud"
+    size="small"
+    ok-text="Ordenar"
+    cancel-text="Cancelar"
+    @ok="sortAllSortedOrderProducts"
+    @cancel="cancelAction"
+  >
+    <div>
+      <p>
+        Você tem certeza de que deseja ordenar todos os produtos da aplicação? <br />
+        (essa ação pode demorar um pouco)
+      </p>
     </div>
   </VaModal>
 
@@ -234,6 +246,7 @@
         }
       },
       async sortAllSortedOrderProducts() {
+        this.showModal = false
         this.isLoading = true
         try {
           const response = await axios.post('/admin/v1/sorted_order_products/sort_all', {})
@@ -356,6 +369,9 @@
             this.$store.commit('setErrorMessage', '')
           }, 5000)
         }
+      },
+      cancelAction() {
+        this.showModal = false
       },
       confirmAction(loadId, loadCode) {
         this.$router.push({ name: 'LoadOrders', params: { loadId }, query: { loadCode } }).catch((err) => {

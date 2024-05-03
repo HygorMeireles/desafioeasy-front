@@ -47,21 +47,21 @@
       <table class="va-table va-table--striped va-table--hoverable w-full">
         <thead>
           <tr>
-            <th>{{ 'ID' }}</th>
-            <th>{{ 'Código' }}</th>
-            <th>{{ 'Baia' }}</th>
-            <th>{{ 'Ações' }}</th>
-            <th>{{ 'Visualizar produtos' }}</th>
-            <th>{{ 'Visualizar produtos ordenados' }}</th>
-            <th>{{ 'Ordenar' }}</th>
+            <th style="text-align: center; vertical-align: middle">{{ 'ID' }}</th>
+            <th style="text-align: center; vertical-align: middle">{{ 'Código' }}</th>
+            <th style="text-align: center; vertical-align: middle">{{ 'Baia' }}</th>
+            <th style="text-align: center; vertical-align: middle">{{ 'Ações' }}</th>
+            <th style="text-align: center; vertical-align: middle">{{ 'Visualizar produtos' }}</th>
+            <th style="text-align: center; vertical-align: middle">{{ 'Visualizar produtos ordenados' }}</th>
+            <th style="text-align: center; vertical-align: middle">{{ 'Ordenar produtos' }}</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="order in filteredOrders" :key="order.id">
-            <td>{{ order.id }}</td>
-            <td>{{ order.code }}</td>
-            <td>{{ order.bay }}</td>
-            <td>
+            <td style="text-align: center; vertical-align: middle">{{ order.id }}</td>
+            <td style="text-align: center; vertical-align: middle">{{ order.code }}</td>
+            <td style="text-align: center; vertical-align: middle">{{ order.bay }}</td>
+            <td style="text-align: center; vertical-align: middle">
               <va-button preset="plain" icon="edit" class="edit-button" @click="openModalToEditOrder(order)" />
               <va-button
                 preset="plain"
@@ -70,27 +70,30 @@
                 @click="openModalToDeleteOrder(order.id)"
               />
             </td>
-            <td>
+            <td style="text-align: center; vertical-align: middle">
               <va-button
                 preset="plain"
                 icon="eye"
                 class="delete-button ml-3"
+                style="margin-left: -8px"
                 @click="confirmAction(order.id, order.code)"
               />
             </td>
-            <td>
+            <td style="text-align: center; vertical-align: middle">
               <va-button
                 preset="plain"
                 icon="eye"
                 class="delete-button ml-3"
+                style="margin-left: -8px"
                 @click="confirmActionSorted(order.id, order.code)"
               />
             </td>
-            <td>
+            <td style="text-align: center; vertical-align: middle">
               <va-button
                 preset="plain"
                 icon="loop"
                 class="delete-button ml-3"
+                style="margin-left: -4px"
                 @click="confirmActionReSorted(order.id)"
               />
             </td>
@@ -558,5 +561,10 @@
 
   .va-select-option--selected {
     color: #f44336 !important;
+  }
+
+  .centered-content {
+    text-align: center;
+    vertical-align: middle;
   }
 </style>
