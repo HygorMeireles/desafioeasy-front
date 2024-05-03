@@ -21,27 +21,34 @@
         <div class="charts-container">
           <div v-for="chart in charts2" :key="chart.title" class="chart">
             <div class="flex flex-col items-center">
-              <div class="chart-info2">
-                <div style="color: white" class="chart-title">{{ chart.title }}</div>
-                <div style="color: white" class="chart-value">{{ chart.value }}</div>
+              <div>
+                <DoughnutChart :chart-data="chartData" :options="chartOptions" />
               </div>
             </div>
           </div>
         </div>
-        <caminhao height="300" width="1500" />
-
         <div class="charts-container">
           <div v-for="chart in charts3" :key="chart.title" class="chart">
             <div class="flex flex-col items-center">
-              <div class="chart-info2">
-                <div style="color: white" class="chart-title">{{ chart.title }}</div>
-                <div style="color: white" class="chart-value">{{ chart.value }}</div>
-              </div>
+              <DoughnutChart2 :chart-data="chartData" :options="chartOptions" />
             </div>
           </div>
         </div>
       </div>
     </div>
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
     <div class="flex col-span-12 p-4 justify-center">
       <div class="py-5 justify-center flex">
         <Icones height="80" width="400" />
@@ -53,6 +60,8 @@
 <script setup>
   import { ref, onMounted } from 'vue'
   import MiniEasyLogo from '@/components/MiniEasyLogo.vue'
+  import DoughnutChart from '@/components/DoughnutChart.vue'
+  import DoughnutChart2 from '@/components/DoughnutChart2.vue'
   import Icones from '@/components/Icones.vue'
   import caminhao from '@/components/caminhao.vue'
   import axios from '@/axios'

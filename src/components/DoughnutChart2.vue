@@ -11,7 +11,7 @@
 
   const doughnutCanvas = ref(null)
   const chartData = {
-    labels: ['Quantidade de Cargas', 'Quantidade de Listas'],
+    labels: ['Quantidade de Produtos', 'Quantidade de Produtos Ordenados'],
     datasets: [
       {
         label: 'Dados do painel',
@@ -27,7 +27,7 @@
     layout: {
       padding: {
         top: 29,
-        left: -200,
+        left: -500,
         right: -300,
         bottom: -1,
       },
@@ -44,8 +44,8 @@
     })
 
     try {
-      const responseLists = await axios.get(`/admin/v1/loads/count`)
-      const responseProducts = await axios.get(`/admin/v1/loads/0/orders/count`)
+      const responseLists = await axios.get(`/admin/v1/products/count`)
+      const responseProducts = await axios.get(`/admin/v1/loads/0/orders/0/sorted_order_products/count`)
 
       chartData.datasets[0].data = [responseLists.data.count, responseProducts.data.count]
       myDoughnutChart.update()
