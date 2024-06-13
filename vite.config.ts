@@ -12,6 +12,9 @@ export default defineConfig({
       include: 'src/i18n/locales/**',
     }),
   ],
+  build: {
+    outDir: 'dist',
+  },
   resolve: {
     alias: {
       '@': '/src',
