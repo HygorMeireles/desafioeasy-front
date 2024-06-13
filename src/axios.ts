@@ -2,7 +2,7 @@ import axios from 'axios'
 import router from './router'
 
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:3001/',
+  baseURL: process.env.VUE_APP_API_BASE_URL,
 })
 
 axiosInstance.interceptors.request.use(
