@@ -2,7 +2,7 @@ import axios from 'axios'
 import router from './router'
 
 const axiosInstance = axios.create({
-  baseURL: process.env.VUE_APP_API_BASE_URL,
+  baseURL: 'https://desafioeasy-back.onrender.com',
 })
 
 axiosInstance.interceptors.request.use(
