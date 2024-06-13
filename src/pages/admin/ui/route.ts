@@ -19,14 +19,6 @@ export default {
       },
     },
     {
-      name: 'rating',
-      path: 'rating',
-      component: () => import('../../../pages/admin/ui/rating/Rating.vue'),
-      meta: {
-        wikiLink: 'https://github.com/epicmaxco/vuestic-admin/wiki/Rating',
-      },
-    },
-    {
       name: 'color-pickers',
       path: 'color-pickers',
       component: () => import('../../../pages/admin/ui/color-pickers/ColorPickers.vue'),

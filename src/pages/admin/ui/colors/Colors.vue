@@ -70,7 +70,6 @@
 
 <script setup lang="ts">
   import { useI18n } from 'vue-i18n'
-  import ColorPresentation from './color-presentation/ColorPresentation.vue'
   import { themeColors, extraColors, buttonGradients } from './color-presentation/colorsData'
 
   const { t } = useI18n()
